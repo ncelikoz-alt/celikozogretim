@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hümanist Öğrenme Kuramı — Öğretmen Adayları Sohbeti</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:#1a0a14;color:#f0ede8;min-height:100vh;padding:1.5rem 1rem}
+  .container{max-width:680px;margin:0 auto}
+  .header{text-align:center;margin-bottom:1.5rem}
+  .topic-badge{display:inline-block;background:#2d1224;border:1px solid #7d3460;border-radius:20px;padding:.3rem 1rem;font-size:.75rem;font-weight:700;color:#ED93B1;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.6rem}
+  h1{font-size:1.3rem;font-weight:800;margin-bottom:.2rem}
+  .meta{font-size:.8rem;color:#7a5a6a}
+  .big-play{width:100%;background:#D4537E;border:none;border-radius:14px;padding:1rem;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;color:#fff;cursor:pointer;margin-bottom:1rem;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:.6rem}
+  .big-play:hover{background:#c04470}
+  .big-play:disabled{background:#3d1a2d;color:#7a5a6a;cursor:not-allowed}
+  .mini-controls{display:flex;gap:.6rem;margin-bottom:1rem}
+  .btn{flex:1;border:none;border-radius:10px;padding:.55rem;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .15s}
+  .btn-pause{background:#f4a261;color:#0f1923}
+  .btn-pause:hover{background:#e0904f}
+  .btn-stop{background:#2d1224;color:#ED93B1;border:1px solid #7d3460}
+  .btn-stop:hover{background:#3d1a2d}
+  .btn:disabled{opacity:.35;cursor:not-allowed}
+  .prog-wrap{margin-bottom:.5rem}
+  .prog-bar{background:#2d1224;border-radius:6px;height:5px;overflow:hidden;margin-bottom:.3rem}
+  .prog-fill{height:100%;background:linear-gradient(90deg,#D4537E,#f4a261);border-radius:6px;width:0%;transition:width .4s}
+  .prog-label{font-size:.72rem;color:#7a5a6a;text-align:right}
+  .settings{background:#2d1224;border-radius:12px;padding:.8rem 1rem;margin-bottom:1rem}
+  .settings-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#7a5a6a;margin-bottom:.7rem}
+  .voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.6rem}
+  .voice-item label{font-size:.7rem;font-weight:700;display:block;margin-bottom:.3rem}
+  .elif-col label{color:#ED93B1}
+  .mert-col label{color:#9FE1CB}
+  select{width:100%;background:#1a0a14;border:1px solid #7d3460;color:#f0ede8;border-radius:7px;padding:.3rem .5rem;font-size:.75rem;font-family:'Nunito',sans-serif;cursor:pointer;outline:none}
+  .speed-row{display:flex;align-items:center;gap:.7rem}
+  .speed-row span{font-size:.75rem;color:#7a5a6a;white-space:nowrap}
+  input[type=range]{flex:1;accent-color:#D4537E;cursor:pointer;height:4px}
+  .speed-val{font-size:.75rem;color:#f0ede8;min-width:34px;text-align:right}
+  .segment{margin-bottom:.5rem}
+  .seg-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:.2rem .7rem;border-radius:20px;display:inline-block;margin-bottom:.5rem}
+  .seg-dialog{background:#D4537E30;color:#ED93B1;border:1px solid #D4537E40}
+  .seg-summary{background:#f4a26130;color:#f4a261;border:1px solid #f4a26140}
+  .line{border-radius:10px;padding:.75rem 1rem;margin-bottom:.5rem;opacity:.4;border:2px solid transparent;transition:all .25s}
+  .line.elif{background:#2d1224}
+  .line.mert{background:#1a2030;margin-left:5%}
+  .line.narrator{background:#1a1a2a;margin:0;border-radius:8px;font-style:italic}
+  .line.active{opacity:1;transform:scale(1.01)}
+  .line.elif.active{border-color:#ED93B1}
+  .line.mert.active{border-color:#9FE1CB}
+  .line.narrator.active{border-color:#f4a261}
+  .speaker{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.25rem}
+  .elif .speaker{color:#ED93B1}
+  .mert .speaker{color:#9FE1CB}
+  .narrator .speaker{color:#f4a261}
+  .text{font-size:.88rem;line-height:1.65;color:#b0a0a8}
+  .line.active .text{color:#f0ede8}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="topic-badge">Hümanist Öğrenme Kuramı</div>
+    <h1>Rogers & Maslow — Öğrenmenin İnsan Boyutu</h1>
+    <div class="meta">İki Öğretmen Adayının Sohbeti • ~10 dakika</div>
+  </div>
+
+  <button class="big-play" id="btn-play" onclick="startPlay()">▶ Dinlemeye Başla</button>
+  <div class="mini-controls">
+    <button class="btn btn-pause" id="btn-pause" onclick="togglePause()" disabled>⏸ Duraklat</button>
+    <button class="btn btn-stop" id="btn-stop" onclick="stopPlay()" disabled>⏹ Durdur</button>
+  </div>
+
+  <div class="prog-wrap">
+    <div class="prog-bar"><div class="prog-fill" id="progress"></div></div>
+    <div class="prog-label" id="prog-text">0 / 0</div>
+  </div>
+
+  <div class="settings">
+    <div class="settings-title">Ses Ayarları</div>
+    <div class="voice-grid">
+      <div class="voice-item elif-col"><label>Elif (Kadın)</label><select id="elif-voice"></select></div>
+      <div class="voice-item mert-col"><label>Mert (Erkek)</label><select id="mert-voice"></select></div>
+    </div>
+    <div class="speed-row">
+      <span>Konuşma hızı:</span>
+      <input type="range" id="speed" min="0.6" max="1.5" step="0.05" value="0.95" oninput="document.getElementById('speed-val').textContent=parseFloat(this.value).toFixed(2)+'x'">
+      <span class="speed-val" id="speed-val">0.95x</span>
+    </div>
+  </div>
+
+  <div class="segment">
+    <span class="seg-label seg-dialog">Sohbet</span>
+    <div id="dialog-lines"></div>
+  </div>
+
+  <div class="segment">
+    <span class="seg-label seg-summary">Sesli Özet</span>
+    <div id="summary-lines"></div>
+  </div>
+</div>
+
+<script>
+const DIALOG = [
+  {s:1,t:"Mert, bugün Rogers'ın hümanist öğrenme kuramını okurken çok şaşırdım. Diğer kuramlardan o kadar farklı ki — sanki tamamen başka bir dünyadan geliyor."},
+  {s:2,t:"Aynen öyle. Pavlov'dan, Skinner'dan, hatta Bandura'dan bile köklü biçimde ayrılıyor. Şöyle düşün — diğer kuramların hepsinde bir şekilde dışarıdan bir etki var. Rogers'ta ise her şey içeriden başlıyor."},
+  {s:1,t:"Tam bunu anlamak istiyorum. İçeriden başlamak ne demek Rogers için?"},
+  {s:2,t:"Rogers şunu söylüyor: Birey ancak hislerini sürece kattığında, içselleştirerek öğrenmeyi kendi yönettiğinde gerçek öğrenme gerçekleşir. Yani zihin ve duygu birlikte çalışmadan öğrenme yüzeysel kalır."},
+  {s:1,t:"Peki bu bizi nereye götürüyor? Öğretmen ne yapacak o zaman?"},
+  {s:2,t:"Rogers öğretmen kavramını bile değiştiriyor. Öğretmen yok — kolaylaştırıcı var. Bilgiyi vermez. Ortamı hazırlar, soruları destekler, yargılamaz. Öğrenciyle yan yana oturur — karşısında değil."},
+  {s:1,t:"Yani geleneksel sınıftaki her şey tersine dönüyor?"},
+  {s:2,t:"Tam olarak. Geleneksel sınıfta öğretmen konuşur, öğrenci dinler. Rogers'ta öğrenci kendi sorusunu kendisi sorar, kendi yöntemini kendisi seçer. Öğretmen sadece bu sürecin güvenli geçmesini sağlar."},
+  {s:1,t:"Burada Maslow devreye giriyor değil mi? Güvenli ortam derken?"},
+  {s:2,t:"Kesinlikle! Maslow'un katkısı burada çok kritik. Maslow diyor ki — bir bireyin fizyolojik ihtiyaçları karşılanmamışsa, güvenlik hissetmiyorsa, ait olma duygusu yoksa — öğrenme gerçekleşemez."},
+  {s:1,t:"Yani aç olan çocuk öğrenemez, korkuyla gelen öğrenci öğrenemez diyoruz."},
+  {s:2,t:"Aynen. Maslow bunu hiyerarşi olarak koymuş — fizyolojik, güvenlik, ait olma, saygı, kendini gerçekleştirme. Alt ihtiyaçlar karşılanmadan üste çıkılamaz. Öğrenme en üstte — kendini gerçekleştirmenin bir parçası."},
+  {s:1,t:"O zaman Rogers ile Maslow birbirini tamamlıyor."},
+  {s:2,t:"Harika özetledin. Maslow zemini hazırlıyor — güvenlik, ait olma, saygı. Rogers o zemin üzerinde öğrenmenin nasıl gerçekleştiğini açıklıyor — içselleştirme, duygu, kişisel anlam, özgürlük."},
+  {s:1,t:"Peki diğer kuramlarla karşılaştırırsak ne görüyoruz? Mesela Bandura ile."},
+  {s:2,t:"Bandura'da öğrenme gözlemden geliyor. Modeli izle, davranışı içselleştir, güdülen, uygula. Duygu orada var ama merkezi değil — öz-yeterlilik inancı var ama bu kişisel anlam değil."},
+  {s:1,t:"Rogers'ta ise duygu tam merkezde."},
+  {s:2,t:"Evet. Rogers diyor ki: Öğrenme, bireyin tüm varlığıyla — zihni ve duygusuyla — anlam inşa ettiği kişisel bir dönüşümdür. Bunu Bandura'da, Skinner'da, Atkinson'da bulamazsın."},
+  {s:1,t:"Peki Vygotsky ile nasıl?"},
+  {s:2,t:"İlginç karşılaştırma. İkisinde de sosyal boyut var. Vygotsky'de öğrenme sosyal etkileşimden geliyor — ZPD, iskele, Daha Bilgili Diğeri. Rogers'ta da kolaylaştırıcı var ama fark şu: Vygotsky'de rehber bilgiyi aktarır, Rogers'ta rehber bilgiyi vermez — öğrenciyi dinler."},
+  {s:1,t:"Yani Vygotsky'nin iskelesi dışarıdan gelirken, Rogers'ta destek içeriden büyümeyi kolaylaştırmak için var."},
+  {s:2,t:"Mükemmel! Vygotsky'de yapı dışarıdan kurulur. Rogers'ta iç yapı zaten öğrencinin içinde — sadece ortam güvenli ve özgür olmalı ki o yapı kendiliğinden gelişsin."},
+  {s:1,t:"Peki gerçek sınıfta Rogers nasıl görünür? Çok teorik kalıyor gibi."},
+  {s:2,t:"Somutlaştıralım. Rogers'ın sınıfında öğrenci sabah gelir, öğretmen sorar: bugün neyi öğrenmek istiyorsun? Öğrenci kendi sorusunu seçer. Kendi yöntemini seçer. Kitap mı okusun, birini mi ziyaret etsin, deney mi yapsın — öğrenci karar verir."},
+  {s:1,t:"Öğretmen hiç müdahale etmiyor mu?"},
+  {s:2,t:"Müdahale ediyor ama farklı biçimde. Soru soruyor, yansıtıyor, geri bildirim veriyor. Ama cevabı vermiyor. Ve en önemlisi — öğrenciyi yargılamıyor. Hata yapmasına izin veriyor. Güvenli ortam bu demek."},
+  {s:1,t:"Maslow burada devreye giriyor — yargılanmama güvenlik ihtiyacı."},
+  {s:2,t:"Kesinlikle. Yargılandığını hisseden öğrenci kapanır. Maslow'un üçüncü basamağı olan ait olma ve dördüncü basamağı olan saygı görme karşılanmazsa Rogers'ın anlattığı öğrenme hiç gerçekleşmez."},
+  {s:1,t:"Yani Rogers'ı uygulamak için önce Maslow'un zeminini sağlamak şart."},
+  {s:2,t:"Aynen. Bu yüzden hümanist kuramı tek başına Rogers veya tek başına Maslow olarak düşünmemek gerekiyor. İkisi birlikte hümanist öğrenme anlayışını oluşturuyor."},
+  {s:1,t:"Peki diğer kuramlarla en büyük farkı nedir sence? Tek cümlede."},
+  {s:2,t:"Diğer kuramlar öğrenmeyi bir ürün veya süreç olarak görür. Rogers öğrenmeyi bir dönüşüm olarak görür. Ve bu dönüşüm ancak bireyin tüm varlığıyla — hem zihni hem duygusuyla — anlam inşa etmesiyle gerçekleşir."},
+  {s:1,t:"Çok güzel. Yani hümanist öğrenme kuramında insan sadece bilgi işleyen bir makine değil — anlam arayan, hisseden, dönüşen bir varlık."},
+  {s:2,t:"Tam olarak. Rogers'ın en güzel sözü de bu: İnsan bir kabı doldurmaya değil, bir ateşi tutuşturmaya gelir. Öğrenme de öyle — doldurulmaz, içeriden tutuşur."},
+  {s:1,t:"Çok etkileyici. Tamam, şimdi sesli özeti dinleyelim — pekişsin."},
+  {s:2,t:"Gel özetleyelim."},
+];
+
+const SUMMARY = [
+  {s:0,t:"Hümanist öğrenme kuramını beş temel başlıkta özetleyelim."},
+  {s:1,t:"Birinci madde: Rogers'a göre öğrenme, bireyin tüm varlığıyla — zihni ve duygusuyla — anlam inşa ettiği kişisel bir dönüşümdür. Bilgi dışarıdan verilemez, içeriden büyür."},
+  {s:2,t:"İkinci madde: Maslow'un katkısı. Öğrenme için önce zemin gerekir. Fizyolojik ihtiyaçlar, güvenlik, ait olma ve saygı görme karşılanmadan gerçek öğrenme gerçekleşemez."},
+  {s:1,t:"Üçüncü madde: Duygu öğrenmenin merkezindedir. Hislerini sürece katmayan, içselleştirerek öğrenmeyi kendi yönetmeyen birey gerçekten öğrenemez."},
+  {s:2,t:"Dördüncü madde: Kolaylaştırıcı rolü. Öğretmen bilgi vermez — ortamı hazırlar. Yargılamaz, soru sorar, güvenli alan oluşturur. Öğrenciyle yan yana oturur."},
+  {s:1,t:"Beşinci madde: Diğer kuramlardan farkı. Bandura gözlemden, Vygotsky etkileşimden, Atkinson bellekten öğrenmeyi açıklar. Rogers ise öğrenmeyi bireyin içsel dönüşümü olarak tanımlar — zihin ve duygu birlikte."},
+  {s:0,t:"Rogers ve Maslow birbirini tamamlar: Maslow zemini hazırlar, Rogers öğrenmenin nasıl gerçekleştiğini açıklar. Hümanist öğrenme kuramının özü budur."},
+];
+
+const synth = window.speechSynthesis;
+let allLines = [], currentIdx = -1, paused = false, utterance = null;
+
+function buildLines() {
+  const dl = document.getElementById('dialog-lines');
+  const sl = document.getElementById('summary-lines');
+  DIALOG.forEach((l,i) => {
+    const cls = l.s===1?'elif':'mert';
+    const spk = l.s===1?'Elif':'Mert';
+    const div = document.createElement('div');
+    div.className='line '+cls; div.id='al'+allLines.length;
+    div.innerHTML=`<div class="speaker">${spk}</div><div class="text">${l.t}</div>`;
+    dl.appendChild(div);
+    allLines.push({...l,elId:'al'+allLines.length});
+  });
+  SUMMARY.forEach((l,i) => {
+    const cls = l.s===0?'narrator':(l.s===1?'elif':'mert');
+    const spk = l.s===0?'Anlatıcı':(l.s===1?'Elif':'Mert');
+    const div = document.createElement('div');
+    div.className='line '+cls; div.id='al'+allLines.length;
+    div.innerHTML=`<div class="speaker">${spk}</div><div class="text">${l.t}</div>`;
+    sl.appendChild(div);
+    allLines.push({...l,elId:'al'+allLines.length});
+  });
+  allLines.forEach((l,i) => {
+    const el = document.querySelectorAll('.line')[i];
+    if(el) el.id='al'+i;
+  });
+  document.getElementById('prog-text').textContent='0 / '+allLines.length;
+}
+buildLines();
+
+function loadVoices() {
+  const voices = synth.getVoices();
+  const tr = voices.filter(v=>v.lang&&v.lang.startsWith('tr'));
+  const pool = tr.length?tr:voices;
+  ['elif-voice','mert-voice'].forEach(id=>{
+    const sel=document.getElementById(id);
+    sel.innerHTML='';
+    pool.forEach((v,i)=>{
+      const o=document.createElement('option');
+      o.value=voices.indexOf(v);
+      o.textContent=v.name;
+      sel.appendChild(o);
+    });
+  });
+  if(tr.length>=2){
+    document.getElementById('elif-voice').value=voices.indexOf(tr[0]);
+    document.getElementById('mert-voice').value=voices.indexOf(tr[1]);
+  }
+}
+synth.addEventListener('voiceschanged',loadVoices);
+loadVoices();
+
+function getVoice(s){
+  const id=s===1?'elif-voice':'mert-voice';
+  const idx=parseInt(document.getElementById(id).value);
+  return synth.getVoices()[idx]||null;
+}
+
+function setActive(i){
+  document.querySelectorAll('.line').forEach(l=>l.classList.remove('active'));
+  if(i>=0){
+    const el=document.getElementById('al'+i);
+    if(el){el.classList.add('active');el.scrollIntoView({behavior:'smooth',block:'center'});}
+  }
+  const pct=i>=0?Math.round((i+1)/allLines.length*100):0;
+  document.getElementById('progress').style.width=pct+'%';
+  document.getElementById('prog-text').textContent=(i>=0?i+1:0)+' / '+allLines.length;
+}
+
+function startPlay(){
+  synth.cancel();currentIdx=0;paused=false;
+  document.getElementById('btn-play').disabled=true;
+  document.getElementById('btn-pause').disabled=false;
+  document.getElementById('btn-stop').disabled=false;
+  playLine(0);
+}
+
+function playLine(i){
+  if(i>=allLines.length){stopPlay();return;}
+  currentIdx=i;setActive(i);
+  const l=allLines[i];
+  utterance=new SpeechSynthesisUtterance(l.t);
+  utterance.voice=getVoice(l.s===0?2:l.s);
+  utterance.rate=parseFloat(document.getElementById('speed').value);
+  utterance.lang='tr-TR';
+  utterance.onend=()=>{if(!paused)setTimeout(()=>playLine(i+1),l.s===0?400:200);};
+  synth.speak(utterance);
+}
+
+function togglePause(){
+  if(paused){
+    paused=false;synth.resume();
+    document.getElementById('btn-pause').textContent='⏸ Duraklat';
+  } else {
+    paused=true;synth.pause();
+    document.getElementById('btn-pause').textContent='▶ Devam Et';
+  }
+}
+
+function stopPlay(){
+  synth.cancel();paused=false;currentIdx=-1;setActive(-1);
+  document.getElementById('btn-play').disabled=false;
+  document.getElementById('btn-pause').disabled=true;
+  document.getElementById('btn-stop').disabled=true;
+  document.getElementById('btn-pause').textContent='⏸ Duraklat';
+}
+</script>
+</body>
+</html>

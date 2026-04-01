@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eğitim Nedir? — Podcast</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:#0f1a0a;color:#f0ede8;min-height:100vh;padding:1.5rem 1rem}
+  .container{max-width:680px;margin:0 auto}
+  .cover{width:100%;aspect-ratio:1;background:linear-gradient(135deg,#1a3a0a 0%,#2d6b14 50%,#1a3a0a 100%);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:1.2rem;position:relative;overflow:hidden}
+  .cover-icon{font-size:64px;margin-bottom:.5rem}
+  .cover-title{font-size:1.6rem;font-weight:800;color:#fff;text-align:center;line-height:1.2;margin-bottom:.3rem}
+  .cover-sub{font-size:.85rem;color:#9FE1CB;text-align:center}
+  .cover-badge{position:absolute;top:1rem;right:1rem;background:#3B6D11;border:1.5px solid #97C459;border-radius:20px;padding:.2rem .8rem;font-size:.7rem;font-weight:700;color:#C0DD97}
+  .cover-ep{position:absolute;bottom:1rem;left:1rem;background:rgba(0,0,0,.4);border-radius:8px;padding:.3rem .8rem;font-size:.75rem;color:#9FE1CB}
+  .header{text-align:center;margin-bottom:1rem}
+  h1{font-size:1.1rem;font-weight:800;margin-bottom:.15rem}
+  .meta{font-size:.78rem;color:#4a6a3a}
+  .big-play{width:100%;background:#3B6D11;border:none;border-radius:14px;padding:1rem;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;color:#fff;cursor:pointer;margin-bottom:.7rem;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:.6rem}
+  .big-play:hover{background:#2d5509}
+  .big-play:disabled{background:#1a2e0d;color:#4a6a3a;cursor:not-allowed}
+  .mini-controls{display:flex;gap:.6rem;margin-bottom:.7rem}
+  .btn{flex:1;border:none;border-radius:10px;padding:.55rem;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .15s}
+  .btn-pause{background:#f4a261;color:#0f1a0a}
+  .btn-pause:hover{background:#e0904f}
+  .btn-stop{background:#1a2e0d;color:#97C459;border:1px solid #3b6d11}
+  .btn-stop:hover{background:#243d14}
+  .btn:disabled{opacity:.35;cursor:not-allowed}
+  .prog-wrap{margin-bottom:.5rem}
+  .prog-bar{background:#1a2e0d;border-radius:6px;height:5px;overflow:hidden;margin-bottom:.3rem}
+  .prog-fill{height:100%;background:linear-gradient(90deg,#3B6D11,#97C459);border-radius:6px;width:0%;transition:width .4s}
+  .prog-label{font-size:.72rem;color:#4a6a3a;text-align:right}
+  .settings{background:#1a2e0d;border-radius:12px;padding:.8rem 1rem;margin-bottom:.8rem}
+  .settings-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#4a6a3a;margin-bottom:.7rem}
+  .voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.6rem}
+  .voice-item label{font-size:.7rem;font-weight:700;display:block;margin-bottom:.3rem}
+  .elif-col label{color:#f4a261}
+  .mert-col label{color:#97C459}
+  select{width:100%;background:#0f1a0a;border:1px solid #3b6d11;color:#f0ede8;border-radius:7px;padding:.3rem .5rem;font-size:.75rem;font-family:'Nunito',sans-serif;cursor:pointer;outline:none}
+  .speed-row{display:flex;align-items:center;gap:.7rem}
+  .speed-row span{font-size:.75rem;color:#4a6a3a;white-space:nowrap}
+  input[type=range]{flex:1;accent-color:#3B6D11;cursor:pointer;height:4px}
+  .speed-val{font-size:.75rem;color:#f0ede8;min-width:34px;text-align:right}
+  .segment{margin-bottom:.5rem}
+  .seg-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:.2rem .7rem;border-radius:20px;display:inline-block;margin-bottom:.4rem}
+  .seg-giris{background:#3B6D1130;color:#97C459;border:1px solid #3B6D1140}
+  .seg-tanim{background:#185FA530;color:#85B7EB;border:1px solid #185FA540}
+  .seg-formal{background:#f4a26130;color:#f4a261;border:1px solid #f4a26140}
+  .seg-orgün{background:#53347030;color:#CECBF6;border:1px solid #53347040}
+  .seg-mesleki{background:#854F0B30;color:#FAC775;border:1px solid #854F0B40}
+  .seg-surec{background:#1D9E7530;color:#9FE1CB;border:1px solid #1D9E7540}
+  .seg-birey{background:#D4537E30;color:#F4C0D1;border:1px solid #D4537E40}
+  .seg-kapanis{background:#63380630;color:#FAC775;border:1px solid #63380640}
+  .line{border-radius:10px;padding:.75rem 1rem;margin-bottom:.45rem;opacity:.4;border:2px solid transparent;transition:all .25s}
+  .line.elif{background:#1a2e0d}
+  .line.mert{background:#0f2008;margin-left:5%}
+  .line.narrator{background:#0a1806;margin:0;border-radius:8px;font-style:italic}
+  .line.active{opacity:1;transform:scale(1.01)}
+  .line.elif.active{border-color:#f4a261}
+  .line.mert.active{border-color:#97C459}
+  .line.narrator.active{border-color:#C0DD97}
+  .speaker{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.25rem}
+  .elif .speaker{color:#f4a261}
+  .mert .speaker{color:#97C459}
+  .narrator .speaker{color:#C0DD97}
+  .text{font-size:.88rem;line-height:1.65;color:#6a8a5a}
+  .line.active .text{color:#f0ede8}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="cover">
+    <div class="cover-badge">PODCAST</div>
+    <div class="cover-icon">🎓</div>
+    <div class="cover-title">Eğitim Nedir?</div>
+    <div class="cover-sub">Öğretmen Adayları için Temel Kavramlar<br>Elif & Mert ile Sohbet</div>
+    <div class="cover-ep">Bölüm 1 • ~8 dakika</div>
+  </div>
+
+  <div class="header">
+    <h1>Eğitim Nedir? — Temel Kavramlar</h1>
+    <div class="meta">Elif & Mert • Eğitim Bilimine Giriş Serisi</div>
+  </div>
+
+  <button class="big-play" id="btn-play" onclick="startPlay()">▶ Podcast'i Başlat</button>
+  <div class="mini-controls">
+    <button class="btn btn-pause" id="btn-pause" onclick="togglePause()" disabled>⏸ Duraklat</button>
+    <button class="btn btn-stop" id="btn-stop" onclick="stopPlay()" disabled>⏹ Durdur</button>
+  </div>
+
+  <div class="prog-wrap">
+    <div class="prog-bar"><div class="prog-fill" id="progress"></div></div>
+    <div class="prog-label" id="prog-text">0 / 0</div>
+  </div>
+
+  <div class="settings">
+    <div class="settings-title">Ses Ayarları</div>
+    <div class="voice-grid">
+      <div class="voice-item elif-col"><label>Elif (Kadın)</label><select id="elif-voice"></select></div>
+      <div class="voice-item mert-col"><label>Mert (Erkek)</label><select id="mert-voice"></select></div>
+    </div>
+    <div class="speed-row">
+      <span>Konuşma hızı:</span>
+      <input type="range" id="speed" min="0.6" max="1.5" step="0.05" value="0.92" oninput="document.getElementById('speed-val').textContent=parseFloat(this.value).toFixed(2)+'x'">
+      <span class="speed-val" id="speed-val">0.92x</span>
+    </div>
+  </div>
+
+  <div class="segment"><span class="seg-label seg-giris">Giriş</span><div id="giris-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-tanim">Eğitimin Tanımı</span><div id="tanim-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-formal">Formal – İnformal Eğitim</span><div id="formal-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-orgün">Örgün – Yaygın Eğitim</span><div id="orgün-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-mesleki">Mesleki & Hizmet İçi Eğitim</span><div id="mesleki-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-surec">Eğitim Bir Süreçtir</span><div id="surec-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-birey">Eğitimli Bireyin Özellikleri</span><div id="birey-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-kapanis">Kapanış</span><div id="kapanis-lines"></div></div>
+
+</div>
+
+<script>
+const GIRIS=[
+  {s:2,t:"Elif Hanım, eğitim kavramını nasıl tanımlarsınız?"},
+  {s:1,t:"Eğitim; bireyin davranışlarında, kendi yaşantısı yoluyla kasıtlı olarak istendik değişiklikler oluşturma sürecidir."},
+  {s:2,t:"Yani eğitim bir değişim süreci mi?"},
+  {s:1,t:"Evet. Bireyi bilgi, beceri ve değer açısından dönüştüren, onu topluma hazırlayan bir süreç. İyi insan, iyi vatandaş ve kendi yeteneklerine uygun bir meslek sahibi birey yetiştirmeyi amaçlar."},
+];
+const TANIM=[
+  {s:2,t:"Öğretim ile eğitim aynı şey midir?"},
+  {s:1,t:"Hayır, farklı kavramlardır. Öğretim yalnızca bilgi ve beceri kazandırmaya odaklanır — okul ortamında gerçekleşir. Eğitim ise çok daha geniş bir kavramdır. Bireyin tüm kişiliğini, değerlerini ve davranışlarını kapsar."},
+  {s:2,t:"Yani öğretim eğitimin bir parçası?"},
+  {s:1,t:"Kesinlikle. Öğretim eğitim şemsiyesinin altındadır. Her öğretim bir eğitim içerir ama her eğitim öğretim yoluyla gerçekleşmez."},
+];
+const FORMAL=[
+  {s:2,t:"Eğitim yalnızca okullarda mı gerçekleşir?"},
+  {s:1,t:"Hayır. Eğitim temelde ikiye ayrılır: formal ve informal eğitim. İnformal eğitim; okullarda değil, hayatın olağan akışı içinde kendiliğinden gerçekleşir. Hiçbir planı ya da programı yoktur."},
+  {s:2,t:"İnformal eğitime somut bir örnek verebilir misiniz?"},
+  {s:1,t:"Bir çocuğun ninesiyle ekmek yaparken mayalanmayı öğrenmesi, babasıyla balığa giderken sabır ve gözlem geliştirmesi — bunlar tamamen informaldır. Okul yoktur, öğretmen yoktur ama güçlü bir öğrenme vardır."},
+  {s:2,t:"Formal eğitim ise okullarda verilen planlı eğitim?"},
+  {s:1,t:"Evet. Formal eğitim; belirli amaçlar doğrultusunda, program dahilinde, uzmanlar tarafından yürütülen eğitimdir. Formal eğitim de kendi içinde ikiye ayrılır: örgün ve yaygın eğitim."},
+];
+const ORGÜN=[
+  {s:2,t:"Örgün eğitim ile yaygın eğitim arasındaki temel fark nedir?"},
+  {s:1,t:"Örgün eğitim; belirli yaş gruplarına yönelik, devlet tarafından denetlenen, diploma veren sistemli eğitimdir. İlkokuldan üniversiteye uzanan resmi eğitim sistemi buna örnektir."},
+  {s:2,t:"Yaygın eğitim ise bu sistemin dışında kalan?"},
+  {s:1,t:"Evet. Yaygın eğitim; okul sisteminin dışında, her yaş grubuna yönelik, esnek yapıda sunulan eğitimdir. Halk eğitim merkezleri, kurslar, sertifika programları bunların en bilinen örnekleridir. Diploma vermeyebilir ama beceri ve sertifika kazandırır."},
+];
+const MESLEKI=[
+  {s:2,t:"Mesleki eğitim yaygın eğitim kapsamında mı değerlendiriliyor?"},
+  {s:1,t:"Mesleki eğitim hem örgün hem yaygın eğitim içinde yer alabilir. Mesleki ve teknik liseler örgün eğitim kapsamındadır. Ancak çıraklık eğitimi ve iş başında verilen kurslar yaygın eğitim kapsamına girer. Her iki durumda da amaç aynıdır: bireyi bir mesleğe hazırlamak."},
+  {s:2,t:"Hizmet içi eğitim de bu çerçevede mi?"},
+  {s:1,t:"Hizmet içi eğitim biraz farklıdır. Halihazırda bir meslekte çalışan bireylerin bilgi ve becerilerini güncellemesi için düzenlenir. Öğretmenlerin aldığı seminerler, doktorların katıldığı kongre eğitimleri buna örnektir. Amaç mesleğe girmek değil, meslekte gelişmektir."},
+];
+const SUREC=[
+  {s:2,t:"Eğitim bir süreç olarak nasıl tanımlanır?"},
+  {s:1,t:"Eğitim, tek bir anda gerçekleşen bir eylem değildir. Merak, araştırma, deneme, yanılma ve düzeltme — bu adımlar birbirini izler ve bireyi adım adım dönüştürür. Süreç hiçbir zaman tamamlanmaz."},
+  {s:2,t:"Yaşam boyu eğitim de bu anlayışın bir uzantısı mı?"},
+  {s:1,t:"Tam olarak. Yaşam boyu eğitim; bireyin doğumdan ölüme kadar her ortamda, her yaşta öğrenmeye devam etmesi gerektiğini savunur. Emeklilik, öğrenmenin sonu değildir. Bir büyükanne torununa hikaye anlatırken öğrenir, bir emekli yabancı dil öğrenirken gelişir."},
+];
+const BIREY=[
+  {s:2,t:"Eğitimin hedeflediği birey nasıl biri olmalıdır?"},
+  {s:1,t:"Eğitimin hedeflediği birey; yalnızca bilgi sahibi değil, o bilgiyi hayata geçirebilen bireydir. Eleştirel düşünebilen, sorun çözebilen, farklı görüşlere saygı duyan, değişime uyum sağlayabilen ve topluma katkı veren biri."},
+  {s:2,t:"Diploma bu hedefe ulaşmanın kanıtı sayılabilir mi?"},
+  {s:1,t:"Diploma bir ölçüttür ama tek ölçüt değildir. Diploma almış ama eleştirel düşünemeyen biri eğitim almış sayılmaz. Asıl hedef; insani değerleri özümsemiş, öğrenmeyi sevmiş, yaşam boyu gelişmeye açık bir birey yetiştirmektir."},
+];
+const KAPANIS=[
+  {s:2,t:"Kısaca özetlersek eğitim nedir?"},
+  {s:1,t:"Eğitim; bireyin tüm yaşamı boyunca, her ortamda, hem planlı hem kendiliğinden gerçekleşen bir dönüşüm sürecidir. Okul bu sürecin yalnızca bir parçasıdır."},
+  {s:2,t:"Yani eğitim hayatın kendisi."},
+  {s:1,t:"Evet. Eğitim şart."},
+];
+
+const SECTIONS=[
+  {data:GIRIS,el:'giris-lines',meta:true},
+  {data:TANIM,el:'tanim-lines'},
+  {data:FORMAL,el:'formal-lines'},
+  {data:ORGÜN,el:'orgün-lines'},
+  {data:MESLEKI,el:'mesleki-lines'},
+  {data:SUREC,el:'surec-lines'},
+  {data:BIREY,el:'birey-lines'},
+  {data:KAPANIS,el:'kapanis-lines',meta:true},
+];
+
+const synth=window.speechSynthesis;
+let allLines=[],currentIdx=-1,paused=false,utterance=null;
+
+function buildLines(){
+  SECTIONS.forEach(sec=>{
+    const cont=document.getElementById(sec.el);
+    sec.data.forEach((l)=>{
+      const cls=l.s===0?'narrator':(l.s===1?'elif':'mert');
+      const spk=l.s===0?'Anlatıcı':(l.s===1?'Elif':'Mert');
+      const div=document.createElement('div');
+      div.className='line '+cls;
+      div.innerHTML=`<div class="speaker">${spk}</div><div class="text">${l.t}</div>`;
+      cont.appendChild(div);
+      allLines.push({...l});
+    });
+  });
+  document.querySelectorAll('.line').forEach((el,i)=>el.id='al'+i);
+  document.getElementById('prog-text').textContent='0 / '+allLines.length;
+}
+buildLines();
+
+function loadVoices(){
+  const voices=synth.getVoices();
+  const tr=voices.filter(v=>v.lang&&v.lang.startsWith('tr'));
+  const pool=tr.length?tr:voices;
+  ['elif-voice','mert-voice'].forEach(id=>{
+    const sel=document.getElementById(id);sel.innerHTML='';
+    pool.forEach(v=>{const o=document.createElement('option');o.value=voices.indexOf(v);o.textContent=v.name;sel.appendChild(o);});
+  });
+  if(tr.length>=2){document.getElementById('elif-voice').value=voices.indexOf(tr[0]);document.getElementById('mert-voice').value=voices.indexOf(tr[1]);}
+}
+synth.addEventListener('voiceschanged',loadVoices);loadVoices();
+
+function getVoice(s){const id=s===1?'elif-voice':'mert-voice';return synth.getVoices()[parseInt(document.getElementById(id).value)]||null;}
+
+function setActive(i){
+  document.querySelectorAll('.line').forEach(l=>l.classList.remove('active'));
+  if(i>=0){const el=document.getElementById('al'+i);if(el){el.classList.add('active');el.scrollIntoView({behavior:'smooth',block:'center'});}}
+  document.getElementById('progress').style.width=(i>=0?Math.round((i+1)/allLines.length*100):0)+'%';
+  document.getElementById('prog-text').textContent=(i>=0?i+1:0)+' / '+allLines.length;
+}
+
+function startPlay(){
+  synth.cancel();currentIdx=0;paused=false;
+  document.getElementById('btn-play').disabled=true;
+  document.getElementById('btn-pause').disabled=false;
+  document.getElementById('btn-stop').disabled=false;
+  playLine(0);
+}
+
+function playLine(i){
+  if(i>=allLines.length){stopPlay();return;}
+  currentIdx=i;setActive(i);
+  const l=allLines[i];
+  utterance=new SpeechSynthesisUtterance(l.t);
+  utterance.voice=getVoice(l.s===0?2:l.s);
+  utterance.rate=parseFloat(document.getElementById('speed').value);
+  utterance.lang='tr-TR';
+  utterance.onend=()=>{if(!paused)setTimeout(()=>playLine(i+1),l.s===0?300:120);};
+  synth.speak(utterance);
+}
+
+function togglePause(){
+  if(paused){paused=false;synth.resume();document.getElementById('btn-pause').textContent='⏸ Duraklat';}
+  else{paused=true;synth.pause();document.getElementById('btn-pause').textContent='▶ Devam Et';}
+}
+
+function stopPlay(){
+  synth.cancel();paused=false;currentIdx=-1;setActive(-1);
+  document.getElementById('btn-play').disabled=false;
+  document.getElementById('btn-pause').disabled=true;
+  document.getElementById('btn-stop').disabled=true;
+  document.getElementById('btn-pause').textContent='⏸ Duraklat';
+}
+</script>
+</body>
+</html>

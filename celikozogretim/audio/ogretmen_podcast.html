@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Öğretmen Kavramı — Podcast</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:#1a0a00;color:#f0ede8;min-height:100vh;padding:1.5rem 1rem}
+  .container{max-width:680px;margin:0 auto}
+  .cover{width:100%;aspect-ratio:1;background:linear-gradient(135deg,#1a0a00 0%,#3d1f00 50%,#1a0a00 100%);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:1.2rem;position:relative;overflow:hidden}
+  .cover-badge{position:absolute;top:1rem;right:1rem;background:#854F0B;border:1.5px solid#FAC775;border-radius:20px;padding:.2rem .8rem;font-size:.7rem;font-weight:700;color:#FAC775}
+  .cover-icon{font-size:64px;margin-bottom:.5rem}
+  .cover-title{font-size:1.6rem;font-weight:800;color:#fff;text-align:center;line-height:1.2;margin-bottom:.3rem}
+  .cover-sub{font-size:.85rem;color:#FAC775;text-align:center}
+  .cover-ep{position:absolute;bottom:1rem;left:1rem;background:rgba(0,0,0,.4);border-radius:8px;padding:.3rem .8rem;font-size:.75rem;color:#FAC775}
+  .header{text-align:center;margin-bottom:1rem}
+  h1{font-size:1.1rem;font-weight:800;margin-bottom:.15rem}
+  .meta{font-size:.78rem;color:#6a4a2a}
+  .big-play{width:100%;background:#854F0B;border:none;border-radius:14px;padding:1rem;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;color:#fff;cursor:pointer;margin-bottom:.7rem;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:.6rem}
+  .big-play:hover{background:#6a3e08}
+  .big-play:disabled{background:#2d1500;color:#6a4a2a;cursor:not-allowed}
+  .mini-controls{display:flex;gap:.6rem;margin-bottom:.7rem}
+  .btn{flex:1;border:none;border-radius:10px;padding:.55rem;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .15s}
+  .btn-pause{background:#f4a261;color:#1a0a00}
+  .btn-pause:hover{background:#e0904f}
+  .btn-stop{background:#2d1500;color:#FAC775;border:1px solid #854F0B}
+  .btn-stop:hover{background:#3d2000}
+  .btn:disabled{opacity:.35;cursor:not-allowed}
+  .prog-wrap{margin-bottom:.5rem}
+  .prog-bar{background:#2d1500;border-radius:6px;height:5px;overflow:hidden;margin-bottom:.3rem}
+  .prog-fill{height:100%;background:linear-gradient(90deg,#854F0B,#FAC775);border-radius:6px;width:0%;transition:width .4s}
+  .prog-label{font-size:.72rem;color:#6a4a2a;text-align:right}
+  .settings{background:#2d1500;border-radius:12px;padding:.8rem 1rem;margin-bottom:.8rem}
+  .settings-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#6a4a2a;margin-bottom:.7rem}
+  .voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.6rem}
+  .voice-item label{font-size:.7rem;font-weight:700;display:block;margin-bottom:.3rem}
+  .elif-col label{color:#f4a261}
+  .mert-col label{color:#FAC775}
+  select{width:100%;background:#1a0a00;border:1px solid #854F0B;color:#f0ede8;border-radius:7px;padding:.3rem .5rem;font-size:.75rem;font-family:'Nunito',sans-serif;cursor:pointer;outline:none}
+  .speed-row{display:flex;align-items:center;gap:.7rem}
+  .speed-row span{font-size:.75rem;color:#6a4a2a;white-space:nowrap}
+  input[type=range]{flex:1;accent-color:#854F0B;cursor:pointer;height:4px}
+  .speed-val{font-size:.75rem;color:#f0ede8;min-width:34px;text-align:right}
+  .segment{margin-bottom:.5rem}
+  .seg-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:.2rem .7rem;border-radius:20px;display:inline-block;margin-bottom:.4rem}
+  .seg-1{background:#854F0B30;color:#FAC775;border:1px solid #854F0B40}
+  .seg-2{background:#185FA530;color:#85B7EB;border:1px solid #185FA540}
+  .seg-3{background:#1D9E7530;color:#9FE1CB;border:1px solid #1D9E7540}
+  .seg-4{background:#53347030;color:#CECBF6;border:1px solid #53347040}
+  .seg-5{background:#D4537E30;color:#F4C0D1;border:1px solid #D4537E40}
+  .line{border-radius:10px;padding:.75rem 1rem;margin-bottom:.45rem;opacity:.4;border:2px solid transparent;transition:all .25s}
+  .line.elif{background:#2d1500}
+  .line.mert{background:#200e00;margin-left:5%}
+  .line.active{opacity:1;transform:scale(1.01)}
+  .line.elif.active{border-color:#f4a261}
+  .line.mert.active{border-color:#FAC775}
+  .speaker{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.25rem}
+  .elif .speaker{color:#f4a261}
+  .mert .speaker{color:#FAC775}
+  .text{font-size:.88rem;line-height:1.65;color:#8a6a4a}
+  .line.active .text{color:#f0ede8}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="cover">
+    <div class="cover-badge">PODCAST</div>
+    <div class="cover-icon">🎓</div>
+    <div class="cover-title">Öğretmen Kavramı</div>
+    <div class="cover-sub">Görünmez Etki ve Derin Anlam<br>Elif & Mert ile Sohbet</div>
+    <div class="cover-ep">~2 dakika</div>
+  </div>
+
+  <div class="header">
+    <h1>Öğretmen — Görünmez Etki</h1>
+    <div class="meta">Elif & Mert · Öğretim İlke ve Yöntemleri Serisi</div>
+  </div>
+
+  <button class="big-play" id="btn-play" onclick="startPlay()">▶ Podcast'i Başlat</button>
+  <div class="mini-controls">
+    <button class="btn btn-pause" id="btn-pause" onclick="togglePause()" disabled>⏸ Duraklat</button>
+    <button class="btn btn-stop" id="btn-stop" onclick="stopPlay()" disabled>⏹ Durdur</button>
+  </div>
+
+  <div class="prog-wrap">
+    <div class="prog-bar"><div class="prog-fill" id="progress"></div></div>
+    <div class="prog-label" id="prog-text">0 / 0</div>
+  </div>
+
+  <div class="settings">
+    <div class="settings-title">Ses Ayarları</div>
+    <div class="voice-grid">
+      <div class="voice-item elif-col"><label>Elif (Kadın)</label><select id="elif-voice"></select></div>
+      <div class="voice-item mert-col"><label>Mert (Erkek)</label><select id="mert-voice"></select></div>
+    </div>
+    <div class="speed-row">
+      <span>Konuşma hızı:</span>
+      <input type="range" id="speed" min="0.6" max="1.5" step="0.05" value="0.95" oninput="document.getElementById('speed-val').textContent=parseFloat(this.value).toFixed(2)+'x'">
+      <span class="speed-val" id="speed-val">0.95x</span>
+    </div>
+  </div>
+
+  <div class="segment"><span class="seg-label seg-1">İyi Öğretmeni Ayıran Nedir?</span><div id="s1-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-2">Sevgi Yeterli midir?</span><div id="s2-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-3">Öğretmen Neden Öğrenmek Zorundadır?</span><div id="s3-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-4">Öğretmenin Görünmez Etkisi</span><div id="s4-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-5">İçerik Aktarmak mı, Öğrenmeyi Sağlamak mı?</span><div id="s5-lines"></div></div>
+
+</div>
+
+<script>
+const S1=[
+  {s:1,t:"Mert, aynı okuldaki iki öğretmen aynı branşta, aynı kıdemde olabilir. Ama biri öğrencilerin vazgeçmediği, diğeri öğrencilerin kaçındığı öğretmen olur. Bu fark nereden geliyor?"},
+  {s:2,t:"Çok doğru bir gözlem. Bu fark çoğunlukla teknik bilgiden değil, öğretmenin öğrenciyi nasıl gördüğünden kaynaklanır. Öğrencinin hata yapmasını normal karşılayan, merakını besleyen, sürece katan öğretmen fark yaratır."},
+  {s:1,t:"Yani iyi öğretmeni tanımlayan şey yalnızca alan bilgisi değil?"},
+  {s:2,t:"Kesinlikle değil. Alan bilgisi gerekli ama yeterli değil. İyi öğretmen; ne zaman konuşacağını, ne zaman susacağını, kime ne kadar süre vereceğini bilen kişidir. Bu da ancak öğrenciye verilen dikkatle gelişir."},
+];
+const S2=[
+  {s:1,t:"Çocukları seven herkes öğretmen olabilir mi?"},
+  {s:2,t:"Sevgi güzel bir başlangıç noktasıdır ama tek başına yetmez. Yalnızca sevgiyle öğretim yapılmaya çalışıldığında içten gelir ama sistematik olmaz. Öğrenmeyi sağlamak için pedagojik bilgi, yöntem bilgisi ve planlama şarttır."},
+  {s:1,t:"Yani sevgi ile uzmanlık birlikte olmalı?"},
+  {s:2,t:"Evet. Sevgisi olan ama yöntemi olmayan öğretmen, iyi niyetle ama verimsiz çalışır. Yöntemi olan ama sevgisi olmayan öğretmen ise öğrenciyle bağ kuramaz. İkisi birlikte olmak zorunda."},
+];
+const S3=[
+  {s:1,t:"Öğretmen yıllarca aynı konuyu anlatıyor. Neden sürekli öğrenmek zorunda olsun ki?"},
+  {s:2,t:"Çünkü öğrenciler değişiyor. Her nesil farklı sorular soruyor, farklı yollarla öğreniyor, farklı referanslarla düşünüyor. Öğretmen aynı konuyu anlatsa bile her yıl farklı bir sınıfla karşı karşıyadır."},
+  {s:1,t:"Bir de alanın kendisi değişiyor değil mi?"},
+  {s:2,t:"Evet, hem alan bilgisi güncelleniyor hem de öğretim yöntemleri gelişiyor. Öğrenmeyi bırakan öğretmen, öğrencisine nasıl öğrenileceğini gösteremez. Öğretmenin en güçlü modeli bizzat kendisidir."},
+];
+const S4=[
+  {s:1,t:"Öğretmenin etkisi ders saatiyle mi sınırlı?"},
+  {s:2,t:"Hayır. Araştırmalar gösteriyor ki öğretmenlerin öğrenciler üzerindeki etkisi yıllar sonra da devam ediyor. Bir öğretmenin sınıfta kurduğu güven ortamı, öğrencinin ilerleyen yıllarda risk almaya cesaret etmesini sağlayabiliyor."},
+  {s:1,t:"Yani öğretmen farkında olmadan şekillendiriyor?"},
+  {s:2,t:"Tam olarak. Öğretmen bir konuyu nasıl anlattığından çok, o konuya nasıl yaklaştığını öğretir. Merakla mı, keyifle mi, sıkılarak mı — öğrenci bunu içselleştirir. Bu görünmez etki, belki de öğretmenliğin en güçlü boyutudur."},
+];
+const S5=[
+  {s:1,t:"İçerik aktarmak ile öğrenmeyi sağlamak arasındaki fark nedir tam olarak?"},
+  {s:2,t:"İçerik aktaran öğretmen konuyu anlatır, süresi dolunca çıkar. Öğrenmeyi sağlayan öğretmen ise o içeriğin öğrencinin zihninde anlam bulup bulmadığını takip eder, gerekirse yolunu değiştirir."},
+  {s:1,t:"Yani öğretmen sonucu ölçmek zorunda?"},
+  {s:2,t:"Evet. Öğretmenlik, anlatmayı bitirmekle değil öğrencinin öğrenmesiyle tamamlanır. Bu yüzden gerçek öğretmen her dersin sonunda kendine şunu sorar: Bugün kim öğrendi, kim öğrenemedi, neden?"},
+];
+
+const SECTIONS=[
+  {data:S1,el:'s1-lines'},
+  {data:S2,el:'s2-lines'},
+  {data:S3,el:'s3-lines'},
+  {data:S4,el:'s4-lines'},
+  {data:S5,el:'s5-lines'},
+];
+
+const synth=window.speechSynthesis;
+let allLines=[],currentIdx=-1,paused=false,utterance=null;
+
+function buildLines(){
+  SECTIONS.forEach(sec=>{
+    const cont=document.getElementById(sec.el);
+    sec.data.forEach(l=>{
+      const cls=l.s===1?'elif':'mert';
+      const spk=l.s===1?'Elif':'Mert';
+      const div=document.createElement('div');
+      div.className='line '+cls;
+      div.innerHTML=`<div class="speaker">${spk}</div><div class="text">${l.t}</div>`;
+      cont.appendChild(div);
+      allLines.push({...l});
+    });
+  });
+  document.querySelectorAll('.line').forEach((el,i)=>el.id='al'+i);
+  document.getElementById('prog-text').textContent='0 / '+allLines.length;
+}
+buildLines();
+
+function loadVoices(){
+  const voices=synth.getVoices();
+  const tr=voices.filter(v=>v.lang&&v.lang.startsWith('tr'));
+  const pool=tr.length?tr:voices;
+  ['elif-voice','mert-voice'].forEach(id=>{
+    const sel=document.getElementById(id);sel.innerHTML='';
+    pool.forEach(v=>{const o=document.createElement('option');o.value=voices.indexOf(v);o.textContent=v.name;sel.appendChild(o);});
+  });
+  if(tr.length>=2){
+    document.getElementById('elif-voice').value=voices.indexOf(tr[0]);
+    document.getElementById('mert-voice').value=voices.indexOf(tr[1]);
+  }
+}
+synth.addEventListener('voiceschanged',loadVoices);loadVoices();
+
+function getVoice(s){
+  const id=s===1?'elif-voice':'mert-voice';
+  return synth.getVoices()[parseInt(document.getElementById(id).value)]||null;
+}
+
+function setActive(i){
+  document.querySelectorAll('.line').forEach(l=>l.classList.remove('active'));
+  if(i>=0){const el=document.getElementById('al'+i);if(el){el.classList.add('active');el.scrollIntoView({behavior:'smooth',block:'center'});}}
+  document.getElementById('progress').style.width=(i>=0?Math.round((i+1)/allLines.length*100):0)+'%';
+  document.getElementById('prog-text').textContent=(i>=0?i+1:0)+' / '+allLines.length;
+}
+
+function startPlay(){
+  synth.cancel();currentIdx=0;paused=false;
+  document.getElementById('btn-play').disabled=true;
+  document.getElementById('btn-pause').disabled=false;
+  document.getElementById('btn-stop').disabled=false;
+  playLine(0);
+}
+
+function playLine(i){
+  if(i>=allLines.length){stopPlay();return;}
+  currentIdx=i;setActive(i);
+  const l=allLines[i];
+  utterance=new SpeechSynthesisUtterance(l.t);
+  utterance.voice=getVoice(l.s);
+  utterance.rate=parseFloat(document.getElementById('speed').value);
+  utterance.lang='tr-TR';
+  utterance.onend=()=>{if(!paused)setTimeout(()=>playLine(i+1),120);};
+  synth.speak(utterance);
+}
+
+function togglePause(){
+  if(paused){paused=false;synth.resume();document.getElementById('btn-pause').textContent='⏸ Duraklat';}
+  else{paused=true;synth.pause();document.getElementById('btn-pause').textContent='▶ Devam Et';}
+}
+
+function stopPlay(){
+  synth.cancel();paused=false;currentIdx=-1;setActive(-1);
+  document.getElementById('btn-play').disabled=false;
+  document.getElementById('btn-pause').disabled=true;
+  document.getElementById('btn-stop').disabled=true;
+  document.getElementById('btn-pause').textContent='⏸ Duraklat';
+}
+</script>
+</body>
+</html>

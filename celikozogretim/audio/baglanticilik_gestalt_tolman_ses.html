@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestalt & Tolman — Öğretmen Adayları Sohbeti</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:#0a0f1a;color:#f0ede8;min-height:100vh;padding:1.5rem 1rem}
+  .container{max-width:680px;margin:0 auto}
+  .header{text-align:center;margin-bottom:1.5rem}
+  .topic-badge{display:inline-block;background:#1a0d28;border:1px solid #534AB7;border-radius:20px;padding:.3rem 1rem;font-size:.75rem;font-weight:700;color:#CECBF6;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.6rem}
+  h1{font-size:1.3rem;font-weight:800;margin-bottom:.2rem}
+  .meta{font-size:.8rem;color:#4a3a6a}
+  .big-play{width:100%;background:#534AB7;border:none;border-radius:14px;padding:1rem;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;color:#fff;cursor:pointer;margin-bottom:1rem;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:.6rem}
+  .big-play:hover{background:#3C3489}
+  .big-play:disabled{background:#1a0d28;color:#4a3a6a;cursor:not-allowed}
+  .mini-controls{display:flex;gap:.6rem;margin-bottom:1rem}
+  .btn{flex:1;border:none;border-radius:10px;padding:.55rem;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .15s}
+  .btn-pause{background:#f4a261;color:#0a0f1a}
+  .btn-pause:hover{background:#e0904f}
+  .btn-stop{background:#1a0d28;color:#CECBF6;border:1px solid #534AB7}
+  .btn-stop:hover{background:#261a3c}
+  .btn:disabled{opacity:.35;cursor:not-allowed}
+  .prog-wrap{margin-bottom:.5rem}
+  .prog-bar{background:#1a0d28;border-radius:6px;height:5px;overflow:hidden;margin-bottom:.3rem}
+  .prog-fill{height:100%;background:linear-gradient(90deg,#534AB7,#1D9E75);border-radius:6px;width:0%;transition:width .4s}
+  .prog-label{font-size:.72rem;color:#4a3a6a;text-align:right}
+  .settings{background:#1a0d28;border-radius:12px;padding:.8rem 1rem;margin-bottom:1rem}
+  .settings-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#4a3a6a;margin-bottom:.7rem}
+  .voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.6rem}
+  .voice-item label{font-size:.7rem;font-weight:700;display:block;margin-bottom:.3rem}
+  .elif-col label{color:#f4a261}
+  .mert-col label{color:#9FE1CB}
+  select{width:100%;background:#0a0f1a;border:1px solid #534AB7;color:#f0ede8;border-radius:7px;padding:.3rem .5rem;font-size:.75rem;font-family:'Nunito',sans-serif;cursor:pointer;outline:none}
+  .speed-row{display:flex;align-items:center;gap:.7rem}
+  .speed-row span{font-size:.75rem;color:#4a3a6a;white-space:nowrap}
+  input[type=range]{flex:1;accent-color:#534AB7;cursor:pointer;height:4px}
+  .speed-val{font-size:.75rem;color:#f0ede8;min-width:34px;text-align:right}
+  .segment{margin-bottom:.5rem}
+  .seg-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:.2rem .7rem;border-radius:20px;display:inline-block;margin-bottom:.5rem}
+  .seg-gestalt{background:#53347030;color:#CECBF6;border:1px solid #53347040}
+  .seg-tolman{background:#1D9E7530;color:#9FE1CB;border:1px solid #1D9E7540}
+  .seg-summary{background:#f4a26130;color:#f4a261;border:1px solid #f4a26140}
+  .line{border-radius:10px;padding:.75rem 1rem;margin-bottom:.5rem;opacity:.4;border:2px solid transparent;transition:all .25s}
+  .line.elif{background:#1a0d28}
+  .line.mert{background:#120920;margin-left:5%}
+  .line.narrator{background:#0a0718;margin:0;border-radius:8px;font-style:italic}
+  .line.active{opacity:1;transform:scale(1.01)}
+  .line.elif.active{border-color:#f4a261}
+  .line.mert.active{border-color:#9FE1CB}
+  .line.narrator.active{border-color:#CECBF6}
+  .speaker{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.25rem}
+  .elif .speaker{color:#f4a261}
+  .mert .speaker{color:#9FE1CB}
+  .narrator .speaker{color:#CECBF6}
+  .text{font-size:.88rem;line-height:1.65;color:#6a5a8a}
+  .line.active .text{color:#f0ede8}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="topic-badge">Gestalt & Tolman — Köprü Kuramlar</div>
+    <h1>Davranışçılıktan Bilişselciliğe — Gestalt ve Tolman</h1>
+    <div class="meta">İki Öğretmen Adayının Sohbeti • ~8 dakika</div>
+  </div>
+
+  <button class="big-play" id="btn-play" onclick="startPlay()">▶ Dinlemeye Başla</button>
+  <div class="mini-controls">
+    <button class="btn btn-pause" id="btn-pause" onclick="togglePause()" disabled>⏸ Duraklat</button>
+    <button class="btn btn-stop" id="btn-stop" onclick="stopPlay()" disabled>⏹ Durdur</button>
+  </div>
+
+  <div class="prog-wrap">
+    <div class="prog-bar"><div class="prog-fill" id="progress"></div></div>
+    <div class="prog-label" id="prog-text">0 / 0</div>
+  </div>
+
+  <div class="settings">
+    <div class="settings-title">Ses Ayarları</div>
+    <div class="voice-grid">
+      <div class="voice-item elif-col"><label>Elif (Kadın)</label><select id="elif-voice"></select></div>
+      <div class="voice-item mert-col"><label>Mert (Erkek)</label><select id="mert-voice"></select></div>
+    </div>
+    <div class="speed-row">
+      <span>Konuşma hızı:</span>
+      <input type="range" id="speed" min="0.6" max="1.5" step="0.05" value="0.95" oninput="document.getElementById('speed-val').textContent=parseFloat(this.value).toFixed(2)+'x'">
+      <span class="speed-val" id="speed-val">0.95x</span>
+    </div>
+  </div>
+
+  <div class="segment">
+    <span class="seg-label seg-gestalt">Gestalt Öğrenme Kuramı</span>
+    <div id="gestalt-lines"></div>
+  </div>
+
+  <div class="segment">
+    <span class="seg-label seg-tolman">Tolman — İşaret Öğrenme</span>
+    <div id="tolman-lines"></div>
+  </div>
+
+  <div class="segment">
+    <span class="seg-label seg-summary">Sesli Özet</span>
+    <div id="summary-lines"></div>
+  </div>
+</div>
+
+<script>
+const GESTALT=[
+  {s:1,t:"Mert, Gestalt öğrenme kuramı neden bu kadar az konuşuluyor? Çok ilginç bir kuram gibi görünüyor."},
+  {s:2,t:"Çok haklısın. Gestalt aslında çok güçlü bir kuram ama davranışçılık ve bilişselciliğin gölgesinde kalmış. Gestalt Almanca bütün veya şekil demek. Temel fikir şu: bütün, parçaların toplamından fazladır."},
+  {s:1,t:"Bu öğrenme için ne anlama geliyor?"},
+  {s:2,t:"Gestaltçılar diyor ki: öğrenme parçaları ezberleme değil, bütünü kavramadır. İnsan zihni her zaman bütünü görmeye çalışır. Bir şeyi öğrenmek için o şeyin tüm yapısını, ilişkilerini, bağlamını kavramak gerekir."},
+  {s:1,t:"Wertheimer, Köhler, Koffka — bunlar kimler?"},
+  {s:2,t:"Gestalt kuramının üç büyük ismi. Max Wertheimer kuramın kurucusu — algı yasalarını geliştirdi. Kurt Koffka öğrenmeye uyguladı. Wolfgang Köhler ise o ünlü şempanze Sultan deneyini yaptı."},
+  {s:1,t:"Sultan deneyi neydi tam olarak?"},
+  {s:2,t:"Köhler, Sultan adlı şempanzeyi araştırma alanına aldı. Tavana çok yüksekte muz astı — elleriyle hiç ulaşamıyor. Yerde iki kısa çubuk var. Sultan bir süre bekledi, deneme yanılma yapmadı. Sonra aniden iki çubuğu birleştirdi ve muza ulaştı. Bu deneme yanılma değildi — ani bir kavrayış, içgörü."},
+  {s:1,t:"Bu davranışçılıktan tamamen farklı."},
+  {s:2,t:"Tamamen. Davranışçılıkta öğrenme yavaş yavaş, deneme yanılmayla olur. Gestalt'ta ise içgörü var — ani aydınlanma. Problem bir anda çözülüyor. Zihindeki yapı yeniden düzenleniyor — buna yeniden yapılanma deniyor."},
+  {s:1,t:"Gestalt'ın algı yasaları da var değil mi?"},
+  {s:2,t:"Evet, bunlar eğitim için çok değerli. Yakınlık yasası: birbirine yakın şeyler bir arada algılanır. Benzerlik yasası: benzer şeyler gruplandırılır. Süreklilik yasası: zihin kesintisiz örüntüleri tercih eder. Kapanma yasası: eksik şekilleri tamamlamaya çalışırız. Bunlar sınıf tasarımında, materyal geliştirmede çok kullanılır."},
+  {s:1,t:"Gestalt'ın genel katkısı ne oldu?"},
+  {s:2,t:"Büyük katkı. Konuyu parça parça değil bütün olarak sunmak. Kavram haritaları, zihin haritaları Gestalt'tan ilham alıyor. Problem çözme, içgörü, yaratıcı düşünme — bunların hepsi Gestalt temelli. Ve çok önemli bir şey: Gestalt, bilişsel kuramın ve yapılandırmacılığın zeminini hazırladı."},
+];
+
+const TOLMAN=[
+  {s:1,t:"Tolman'a geçelim. İşaret öğrenme kuramı nasıl bir şey?"},
+  {s:2,t:"Edward Tolman çok ilginç bir konumda — davranışçı dönemde yaşadı ama bilişselciye daha yakın düşündü. Farelerin labirentte öğrenmesini inceledi ve şaşırtıcı bir şey keşfetti."},
+  {s:1,t:"Neydi bu keşif?"},
+  {s:2,t:"Fareler labirentte yiyecek ödülü olmadan da dolaşınca zihinsel harita oluşturuyorlardı. Sonra ödül konulduğunda, hiç pekiştirme almadan labirenti çözüyorlardı. Tolman buna gizil öğrenme dedi — pekiştirme olmadan gerçekleşen öğrenme."},
+  {s:1,t:"Bu davranışçılığa büyük bir itiraz değil mi?"},
+  {s:2,t:"Devrim niteliğinde. Skinner diyordu ki pekiştirme olmadan öğrenme olmaz. Tolman dedi ki hayır — organizma çevreyi keşfederken bilgi biriktiriyor, zihinsel harita oluşturuyor. Pekiştirme öğrenmeyi değil, performansı etkiliyor."},
+  {s:1,t:"İşaret öğrenme ne demek tam olarak?"},
+  {s:2,t:"Tolman'a göre organizma çevreden işaretler alıyor — bu işaret şunu gösteriyor, o yola gidersem oraya çıkarım gibi. Yani öğrenme uyarıcı-tepki değil, işaret-beklenti ilişkisi. Beklenti kavramı çok önemli — zihin geleceği tahmin ediyor."},
+  {s:1,t:"Bu bilişsel öğrenme kuramıyla bağlanıyor mu?"},
+  {s:2,t:"Kesinlikle. Tolman bilişsel devrime kapı araladı. Zihinsel harita kavramı bugün hâlâ kullanılıyor — hem psikolojide hem şehir planlamada hem eğitimde. Ve gizil öğrenme, farkında olmadan öğrenme — bu sosyal medyada, oyun ortamlarında çok görüyoruz bugün."},
+  {s:1,t:"Tolman'ın katkısı özetlenirse?"},
+  {s:2,t:"Öğrenme gözlemlenebilir davranış değişikliği değildir — zihinsel temsillerin oluşmasıdır. Bu cümle davranışçılığı aşıyor ve bilişsel kuramın temelini atıyor. Tolman köprü kuramcı — davranışçılıktan bilişselciliğe geçişin mimarı."},
+];
+
+const SUMMARY=[
+  {s:0,t:"Gestalt ve Tolman kuramlarını dört temel başlıkta özetleyelim."},
+  {s:1,t:"Birinci madde: Gestalt kuramı — bütün parçaların toplamından fazladır. Öğrenme parçaları ezberlemek değil, bütünü kavramaktır. İçgörü ve ani kavrayış bu kuramın özüdür. Wertheimer, Köhler ve Koffka temel isimleridir."},
+  {s:2,t:"İkinci madde: Köhler'in Sultan deneyi içgörü yoluyla öğrenmeyi kanıtladı. Şempanze deneme yanılma değil, aniden çözüm üretti. Bu davranışçılığa güçlü bir itiraz ve bilişselciliğin habercisidir."},
+  {s:1,t:"Üçüncü madde: Tolman'ın işaret öğrenme kuramı. Organizma çevreyi keşfederken zihinsel harita oluşturur. Pekiştirme olmadan gizil öğrenme gerçekleşir. Pekiştirme öğrenmeyi değil performansı etkiler. Tolman, davranışçılıktan bilişselciliğe köprüdür."},
+  {s:2,t:"Dördüncü madde: Her iki kuramın ortak önemi — Gestalt ve Tolman, saf uyarıcı-tepki mekanizmasının ötesine geçiyor. Gestalt bütünü kavramayı, Tolman zihinsel temsil ve haritayı merkeze alıyor. İkisi de davranışçılığın sınırlarını zorluyor ve bilişsel öğrenme kuramının kapısını aralıyor."},
+  {s:0,t:"Gestalt ve Tolman, öğrenme kuramları tarihinde köprü kuramcılardır. Davranışçılığın egemen olduğu bir dönemde zihnin aktif rolünü vurgulayarak bilişsel öğrenme kuramının zeminini hazırladılar. İyi bir öğretmen bu köprü kuramlardan da yararlanır."},
+];
+
+const synth=window.speechSynthesis;
+let allLines=[],currentIdx=-1,paused=false,utterance=null;
+
+function buildLines(){
+  const sections=[
+    {data:GESTALT,el:'gestalt-lines'},
+    {data:TOLMAN,el:'tolman-lines'},
+    {data:SUMMARY,el:'summary-lines',hasMeta:true},
+  ];
+  sections.forEach(sec=>{
+    const cont=document.getElementById(sec.el);
+    sec.data.forEach((l)=>{
+      const cls=sec.hasMeta?(l.s===0?'narrator':(l.s===1?'elif':'mert')):(l.s===1?'elif':'mert');
+      const spk=sec.hasMeta?(l.s===0?'Anlatıcı':(l.s===1?'Elif':'Mert')):(l.s===1?'Elif':'Mert');
+      const div=document.createElement('div');
+      div.className='line '+cls;
+      div.innerHTML=`<div class="speaker">${spk}</div><div class="text">${l.t}</div>`;
+      cont.appendChild(div);
+      allLines.push({...l});
+    });
+  });
+  document.querySelectorAll('.line').forEach((el,i)=>el.id='al'+i);
+  document.getElementById('prog-text').textContent='0 / '+allLines.length;
+}
+buildLines();
+
+function loadVoices(){
+  const voices=synth.getVoices();
+  const tr=voices.filter(v=>v.lang&&v.lang.startsWith('tr'));
+  const pool=tr.length?tr:voices;
+  ['elif-voice','mert-voice'].forEach(id=>{
+    const sel=document.getElementById(id);sel.innerHTML='';
+    pool.forEach((v)=>{const o=document.createElement('option');o.value=voices.indexOf(v);o.textContent=v.name;sel.appendChild(o);});
+  });
+  if(tr.length>=2){document.getElementById('elif-voice').value=voices.indexOf(tr[0]);document.getElementById('mert-voice').value=voices.indexOf(tr[1]);}
+}
+synth.addEventListener('voiceschanged',loadVoices);loadVoices();
+
+function getVoice(s){const id=s===1?'elif-voice':'mert-voice';return synth.getVoices()[parseInt(document.getElementById(id).value)]||null;}
+
+function setActive(i){
+  document.querySelectorAll('.line').forEach(l=>l.classList.remove('active'));
+  if(i>=0){const el=document.getElementById('al'+i);if(el){el.classList.add('active');el.scrollIntoView({behavior:'smooth',block:'center'});}}
+  document.getElementById('progress').style.width=(i>=0?Math.round((i+1)/allLines.length*100):0)+'%';
+  document.getElementById('prog-text').textContent=(i>=0?i+1:0)+' / '+allLines.length;
+}
+
+function startPlay(){
+  synth.cancel();currentIdx=0;paused=false;
+  document.getElementById('btn-play').disabled=true;
+  document.getElementById('btn-pause').disabled=false;
+  document.getElementById('btn-stop').disabled=false;
+  playLine(0);
+}
+
+function playLine(i){
+  if(i>=allLines.length){stopPlay();return;}
+  currentIdx=i;setActive(i);
+  const l=allLines[i];
+  utterance=new SpeechSynthesisUtterance(l.t);
+  utterance.voice=getVoice(l.s===0?2:l.s);
+  utterance.rate=parseFloat(document.getElementById('speed').value);
+  utterance.lang='tr-TR';
+  utterance.onend=()=>{if(!paused)setTimeout(()=>playLine(i+1),l.s===0?400:200);};
+  synth.speak(utterance);
+}
+
+function togglePause(){
+  if(paused){paused=false;synth.resume();document.getElementById('btn-pause').textContent='⏸ Duraklat';}
+  else{paused=true;synth.pause();document.getElementById('btn-pause').textContent='▶ Devam Et';}
+}
+
+function stopPlay(){
+  synth.cancel();paused=false;currentIdx=-1;setActive(-1);
+  document.getElementById('btn-play').disabled=false;
+  document.getElementById('btn-pause').disabled=true;
+  document.getElementById('btn-stop').disabled=true;
+  document.getElementById('btn-pause').textContent='⏸ Duraklat';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bağlantıcılık Öğrenme Kuramı — Öğretmen Adayları Sohbeti</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:#060d1a;color:#f0ede8;min-height:100vh;padding:1.5rem 1rem}
+  .container{max-width:680px;margin:0 auto}
+  .header{text-align:center;margin-bottom:1.5rem}
+  .topic-badge{display:inline-block;background:#071428;border:1px solid #185FA5;border-radius:20px;padding:.3rem 1rem;font-size:.75rem;font-weight:700;color:#85B7EB;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.6rem}
+  h1{font-size:1.3rem;font-weight:800;margin-bottom:.2rem}
+  .meta{font-size:.8rem;color:#3a5a7a}
+  .big-play{width:100%;background:#185FA5;border:none;border-radius:14px;padding:1rem;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;color:#fff;cursor:pointer;margin-bottom:1rem;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:.6rem}
+  .big-play:hover{background:#0d4a8a}
+  .big-play:disabled{background:#071428;color:#3a5a7a;cursor:not-allowed}
+  .mini-controls{display:flex;gap:.6rem;margin-bottom:1rem}
+  .btn{flex:1;border:none;border-radius:10px;padding:.55rem;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .15s}
+  .btn-pause{background:#f4a261;color:#060d1a}
+  .btn-pause:hover{background:#e0904f}
+  .btn-stop{background:#071428;color:#85B7EB;border:1px solid #185FA5}
+  .btn-stop:hover{background:#0d1f3c}
+  .btn:disabled{opacity:.35;cursor:not-allowed}
+  .prog-wrap{margin-bottom:.5rem}
+  .prog-bar{background:#071428;border-radius:6px;height:5px;overflow:hidden;margin-bottom:.3rem}
+  .prog-fill{height:100%;background:linear-gradient(90deg,#185FA5,#56cfe1);border-radius:6px;width:0%;transition:width .4s}
+  .prog-label{font-size:.72rem;color:#3a5a7a;text-align:right}
+  .settings{background:#071428;border-radius:12px;padding:.8rem 1rem;margin-bottom:1rem}
+  .settings-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#3a5a7a;margin-bottom:.7rem}
+  .voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.6rem}
+  .voice-item label{font-size:.7rem;font-weight:700;display:block;margin-bottom:.3rem}
+  .elif-col label{color:#f4a261}
+  .mert-col label{color:#56cfe1}
+  select{width:100%;background:#060d1a;border:1px solid #185FA5;color:#f0ede8;border-radius:7px;padding:.3rem .5rem;font-size:.75rem;font-family:'Nunito',sans-serif;cursor:pointer;outline:none}
+  .speed-row{display:flex;align-items:center;gap:.7rem}
+  .speed-row span{font-size:.75rem;color:#3a5a7a;white-space:nowrap}
+  input[type=range]{flex:1;accent-color:#185FA5;cursor:pointer;height:4px}
+  .speed-val{font-size:.75rem;color:#f0ede8;min-width:34px;text-align:right}
+  .segment{margin-bottom:.5rem}
+  .seg-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:.2rem .7rem;border-radius:20px;display:inline-block;margin-bottom:.5rem}
+  .seg-bag{background:#185FA530;color:#85B7EB;border:1px solid #185FA540}
+  .seg-iliskiler{background:#1D9E7530;color:#9FE1CB;border:1px solid #1D9E7540}
+  .seg-summary{background:#f4a26130;color:#f4a261;border:1px solid #f4a26140}
+  .line{border-radius:10px;padding:.75rem 1rem;margin-bottom:.5rem;opacity:.4;border:2px solid transparent;transition:all .25s}
+  .line.elif{background:#071428}
+  .line.mert{background:#050f20;margin-left:5%}
+  .line.narrator{background:#040c1a;margin:0;border-radius:8px;font-style:italic}
+  .line.active{opacity:1;transform:scale(1.01)}
+  .line.elif.active{border-color:#f4a261}
+  .line.mert.active{border-color:#56cfe1}
+  .line.narrator.active{border-color:#85B7EB}
+  .speaker{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.25rem}
+  .elif .speaker{color:#f4a261}
+  .mert .speaker{color:#56cfe1}
+  .narrator .speaker{color:#85B7EB}
+  .text{font-size:.88rem;line-height:1.65;color:#4a6a8a}
+  .line.active .text{color:#f0ede8}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="topic-badge">Bağlantıcılık — Connectivism</div>
+    <h1>Dijital Çağda Öğrenme — Siemens & Downes</h1>
+    <div class="meta">İki Öğretmen Adayının Sohbeti • ~10 dakika</div>
+  </div>
+
+  <button class="big-play" id="btn-play" onclick="startPlay()">▶ Dinlemeye Başla</button>
+  <div class="mini-controls">
+    <button class="btn btn-pause" id="btn-pause" onclick="togglePause()" disabled>⏸ Duraklat</button>
+    <button class="btn btn-stop" id="btn-stop" onclick="stopPlay()" disabled>⏹ Durdur</button>
+  </div>
+
+  <div class="prog-wrap">
+    <div class="prog-bar"><div class="prog-fill" id="progress"></div></div>
+    <div class="prog-label" id="prog-text">0 / 0</div>
+  </div>
+
+  <div class="settings">
+    <div class="settings-title">Ses Ayarları</div>
+    <div class="voice-grid">
+      <div class="voice-item elif-col"><label>Elif (Kadın)</label><select id="elif-voice"></select></div>
+      <div class="voice-item mert-col"><label>Mert (Erkek)</label><select id="mert-voice"></select></div>
+    </div>
+    <div class="speed-row">
+      <span>Konuşma hızı:</span>
+      <input type="range" id="speed" min="0.6" max="1.5" step="0.05" value="0.95" oninput="document.getElementById('speed-val').textContent=parseFloat(this.value).toFixed(2)+'x'">
+      <span class="speed-val" id="speed-val">0.95x</span>
+    </div>
+  </div>
+
+  <div class="segment">
+    <span class="seg-label seg-bag">Bağlantıcılık Kuramı — Siemens & Downes</span>
+    <div id="bag-lines"></div>
+  </div>
+
+  <div class="segment">
+    <span class="seg-label seg-iliskiler">Diğer Kuramlarla İlişkisi</span>
+    <div id="iliski-lines"></div>
+  </div>
+
+  <div class="segment">
+    <span class="seg-label seg-summary">Sesli Özet</span>
+    <div id="summary-lines"></div>
+  </div>
+</div>
+
+<script>
+const BAGLANTICILIK=[
+  {s:1,t:"Mert, bağlantıcılık kuramını diğer öğrenme kuramlarından ayıran en temel şey ne?"},
+  {s:2,t:"Radikal bir fark var. Pavlov'dan Rogers'a kadar tüm kuramlar şu soruyu soruyordu: öğrenme bireyin zihninde nasıl gerçekleşir? Bağlantıcılık ise dedi ki: bu soru artık yanlış. Öğrenme bireyin zihninde değil — ağın içinde yaşıyor."},
+  {s:1,t:"Bu nasıl mümkün olabiliyor?"},
+  {s:2,t:"Siemens ve Downes 2005'te şunu gözlemledi: dijital çağda bilgi o kadar hızlı büyüyor ve değişiyor ki hiç kimse her şeyi kafasına sığdıramıyor. O zaman bilgiyi kafada tutmak değil, bilgiye ulaşmak öğrenmenin kendisi oluyor."},
+  {s:1,t:"Ağ ve düğüm kavramları tam olarak ne anlama geliyor?"},
+  {s:2,t:"Düğüm her türlü bilgi kaynağı olabilir. Bir uzman, bir veritabanı, bir yapay zeka, bir sanal müze, yasal bir metin, bir simülasyon. Bunların hepsi ayrı ayrı düğüm. Öğrenmek bu düğümlere bağlanmak ve aralarındaki ilişkileri görmektir."},
+  {s:1,t:"Peki birey hiç öğrenmiyor mu artık?"},
+  {s:2,t:"Birey öğreniyor ama farklı biçimde. Bireyin görevi her şeyi bilmek değil — doğru düğüme nasıl ulaşacağını bilmek. Siemens'in çok güzel bir sözü var: bilgi kütüphanelerde, internette, uzmanlarda zaten var. Kafayı doldurmak değil, doğru düğüme bağlanmayı bilmek asıl öğrenmedir."},
+  {s:1,t:"Bu anlayış eğitimi nasıl etkiliyor?"},
+  {s:2,t:"Köklü biçimde değiştiriyor. Geleneksel öğretmen her şeyi bilen tek kaynaktı. Bağlantıcılıkta öğretmen bir düğüm — ama tek düğüm değil. Öğretmenin asıl görevi artık bilgiyi aktarmak değil, öğrencinin doğru ağı kurmasına yardım etmek."},
+  {s:1,t:"Güncel kalmak da bu kuramda önemli değil mi?"},
+  {s:2,t:"Çok önemli. Bağlantıcılıkta öğrenme bitmez. Çünkü bilgi sürekli değişiyor. Bugün doğru olan yarın geçersiz olabilir. Bu yüzden ağı güncel tutmak, yeni düğümlerle bağlantı kurmak öğrenmenin devam etmesi demek."},
+  {s:1,t:"Bağlantıcılık eleştiriliyor mu?"},
+  {s:2,t:"Evet. En büyük eleştiri şu: bu bir öğrenme kuramı mı yoksa teknoloji ortamı kuramı mı? Bazı akademisyenler diyor ki bağlantıcılık öğrenmenin nasıl gerçekleştiğini değil, öğrenme ortamını tanımlıyor. Ama dijital çağda öğrenmeyi anlamak için vazgeçilmez bir çerçeve sunduğu da kabul görüyor."},
+];
+
+const ILISKILER=[
+  {s:1,t:"Bağlantıcılığı diğer kuramlarla nasıl ilişkilendirebiliriz?"},
+  {s:2,t:"İlginç benzerlikler var. Tolman'ın zihinsel harita kavramını hatırlıyor musun? Tolman farelerin zihinsel harita oluşturduğunu söylüyordu. Bağlantıcılıkta da öğrenci bir tür ağ haritası oluşturuyor — ama bu harita artık bireyin zihninde değil, dışarıdaki gerçek ağda."},
+  {s:1,t:"Vygotsky ile de bağlantısı var gibi."},
+  {s:2,t:"Kesinlikle. Vygotsky öğrenmenin sosyal ortamda başladığını söylüyordu. Bağlantıcılıkta da öğrenme sosyal ağda — insanlar, kurumlar, yapay zeka arasındaki etkileşimde gerçekleşiyor. Ama Vygotsky'de odak yüz yüze etkileşimdi, bağlantıcılıkta dijital ağ."},
+  {s:1,t:"Davranışçılık ve bağlantıcılık arasındaki fark çok net galiba."},
+  {s:2,t:"Gece ve gündüz gibi. Davranışçılık diyordu ki: pekiştir, tekrar et, davranışı şekillendir. Bağlantıcılık diyor ki: ağı kur, doğru düğüme ulaş, güncel kal. Pavlov 1890'larda başladı, Siemens 2005'te. Aradan geçen yüz yıl öğrenme anlayışını kökten değiştirdi."},
+  {s:1,t:"Öğretmen adayı için en pratik çıkarım ne?"},
+  {s:2,t:"Çok net: öğrencilere bilgi verme — doğru kaynağa ulaşmayı öğret. Eleştirel kaynak değerlendirmesi, bilgi ağı oluşturma, farklı düğümler arasında bağlantı kurma — bunlar 21. yüzyılın temel becerileri. Ve güncel kalmak — bağlantıcılıkta öğrenme bitmez, ağ sürekli güncellenir."},
+  {s:1,t:"Yani bağlantıcılık hem en yeni hem de en tartışmalı kuram."},
+  {s:2,t:"Tam olarak. Ve teknoloji hızlandıkça daha da önem kazanacak. Yapay zeka, büyük veri, sanal gerçeklik — bunların hepsi yeni düğümler oluşturuyor. Öğrencilerin bu düğümlere nasıl bağlanacağını öğrenmesi giderek daha kritik hale geliyor."},
+];
+
+const SUMMARY=[
+  {s:0,t:"Bağlantıcılık kuramını beş temel başlıkta özetleyelim."},
+  {s:1,t:"Birinci madde: Bağlantıcılığın temel ilkesi. Öğrenme bireyin zihninde değil, ağın içindedir. Siemens ve Downes 2005'te dijital çağda öğrenmenin köklü biçimde değiştiğini ortaya koydu."},
+  {s:2,t:"İkinci madde: Düğüm ve ağ kavramları. Uzman, veritabanı, yapay zeka, sanal müze, yasal metin — her biri bir düğüm. Öğrenmek bu düğümlere bağlanmak ve aralarındaki ilişkileri görmektir."},
+  {s:1,t:"Üçüncü madde: Doğru düğüme ulaşmak. Her şeyi bilmek değil, doğru kaynağa nasıl ulaşılacağını bilmek asıl öğrenmedir. Bilgi zaten var — kütüphanelerde, internette, uzmanlarda. Kafayı doldurmak değil, doğru bağlantıyı kurmak esastır."},
+  {s:2,t:"Dördüncü madde: Güncel kalmak. Bağlantıcılıkta öğrenme bitmez. Bilgi sürekli değiştiğinden ağı güncel tutmak, yeni düğümlerle bağlantı kurmak öğrenmenin devamı demektir."},
+  {s:1,t:"Beşinci madde: Öğretmenin yeni rolü. Geleneksel tek kaynak öğretmen anlayışı değişiyor. Öğretmen artık bilgiyi aktaran değil, öğrencinin doğru ağı kurmasına yardım eden bir rehber. Eleştirel kaynak değerlendirmesi ve ağ oluşturma 21. yüzyılın temel becerilerdir."},
+  {s:0,t:"Bağlantıcılık, öğrenme kuramları tarihinin en modern ve en tartışmalı kuramıdır. Davranışçılıktan bilişselciliğe, yapılandırmacılıktan hümanizme uzanan yolculuğun son durağıdır. Ve teknoloji hızlandıkça önemi artmaya devam edecektir."},
+];
+
+const synth=window.speechSynthesis;
+let allLines=[],currentIdx=-1,paused=false,utterance=null;
+
+function buildLines(){
+  const sections=[
+    {data:BAGLANTICILIK,el:'bag-lines'},
+    {data:ILISKILER,el:'iliski-lines'},
+    {data:SUMMARY,el:'summary-lines',hasMeta:true},
+  ];
+  sections.forEach(sec=>{
+    const cont=document.getElementById(sec.el);
+    sec.data.forEach((l)=>{
+      const cls=sec.hasMeta?(l.s===0?'narrator':(l.s===1?'elif':'mert')):(l.s===1?'elif':'mert');
+      const spk=sec.hasMeta?(l.s===0?'Anlatıcı':(l.s===1?'Elif':'Mert')):(l.s===1?'Elif':'Mert');
+      const div=document.createElement('div');
+      div.className='line '+cls;
+      div.innerHTML=`<div class="speaker">${spk}</div><div class="text">${l.t}</div>`;
+      cont.appendChild(div);
+      allLines.push({...l});
+    });
+  });
+  document.querySelectorAll('.line').forEach((el,i)=>el.id='al'+i);
+  document.getElementById('prog-text').textContent='0 / '+allLines.length;
+}
+buildLines();
+
+function loadVoices(){
+  const voices=synth.getVoices();
+  const tr=voices.filter(v=>v.lang&&v.lang.startsWith('tr'));
+  const pool=tr.length?tr:voices;
+  ['elif-voice','mert-voice'].forEach(id=>{
+    const sel=document.getElementById(id);sel.innerHTML='';
+    pool.forEach((v)=>{const o=document.createElement('option');o.value=voices.indexOf(v);o.textContent=v.name;sel.appendChild(o);});
+  });
+  if(tr.length>=2){document.getElementById('elif-voice').value=voices.indexOf(tr[0]);document.getElementById('mert-voice').value=voices.indexOf(tr[1]);}
+}
+synth.addEventListener('voiceschanged',loadVoices);loadVoices();
+
+function getVoice(s){const id=s===1?'elif-voice':'mert-voice';return synth.getVoices()[parseInt(document.getElementById(id).value)]||null;}
+
+function setActive(i){
+  document.querySelectorAll('.line').forEach(l=>l.classList.remove('active'));
+  if(i>=0){const el=document.getElementById('al'+i);if(el){el.classList.add('active');el.scrollIntoView({behavior:'smooth',block:'center'});}}
+  document.getElementById('progress').style.width=(i>=0?Math.round((i+1)/allLines.length*100):0)+'%';
+  document.getElementById('prog-text').textContent=(i>=0?i+1:0)+' / '+allLines.length;
+}
+
+function startPlay(){
+  synth.cancel();currentIdx=0;paused=false;
+  document.getElementById('btn-play').disabled=true;
+  document.getElementById('btn-pause').disabled=false;
+  document.getElementById('btn-stop').disabled=false;
+  playLine(0);
+}
+
+function playLine(i){
+  if(i>=allLines.length){stopPlay();return;}
+  currentIdx=i;setActive(i);
+  const l=allLines[i];
+  utterance=new SpeechSynthesisUtterance(l.t);
+  utterance.voice=getVoice(l.s===0?2:l.s);
+  utterance.rate=parseFloat(document.getElementById('speed').value);
+  utterance.lang='tr-TR';
+  utterance.onend=()=>{if(!paused)setTimeout(()=>playLine(i+1),l.s===0?400:200);};
+  synth.speak(utterance);
+}
+
+function togglePause(){
+  if(paused){paused=false;synth.resume();document.getElementById('btn-pause').textContent='⏸ Duraklat';}
+  else{paused=true;synth.pause();document.getElementById('btn-pause').textContent='▶ Devam Et';}
+}
+
+function stopPlay(){
+  synth.cancel();paused=false;currentIdx=-1;setActive(-1);
+  document.getElementById('btn-play').disabled=false;
+  document.getElementById('btn-pause').disabled=true;
+  document.getElementById('btn-stop').disabled=true;
+  document.getElementById('btn-pause').textContent='⏸ Duraklat';
+}
+</script>
+</body>
+</html>

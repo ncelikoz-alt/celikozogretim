@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Öğretmen Adayları Sohbeti</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:#0f1923;color:#f0ede8;min-height:100vh;padding:1.5rem 1rem}
+  .container{max-width:680px;margin:0 auto}
+
+  /* Başlık */
+  .header{text-align:center;margin-bottom:1.5rem}
+  .topic-badge{display:inline-block;background:#1a2f45;border:1px solid #2e4a66;border-radius:20px;padding:.3rem 1rem;font-size:.75rem;font-weight:700;color:#7ab8d4;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.6rem}
+  h1{font-size:1.3rem;font-weight:800;margin-bottom:.2rem}
+  .meta{font-size:.8rem;color:#5a7a94}
+
+  /* Büyük oynat butonu */
+  .big-play{width:100%;background:#1d9e75;border:none;border-radius:14px;padding:1rem;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;color:#fff;cursor:pointer;margin-bottom:1rem;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:.6rem}
+  .big-play:hover{background:#17876a}
+  .big-play:disabled{background:#243447;color:#5a7a94;cursor:not-allowed}
+
+  /* Mini kontroller */
+  .mini-controls{display:flex;gap:.6rem;margin-bottom:1rem}
+  .btn{flex:1;border:none;border-radius:10px;padding:.55rem;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .15s}
+  .btn-pause{background:#f4a261;color:#0f1923}
+  .btn-pause:hover{background:#e0904f}
+  .btn-stop{background:#1a2738;color:#7a9ab5;border:1px solid #243447}
+  .btn-stop:hover{background:#243447}
+  .btn:disabled{opacity:.35;cursor:not-allowed}
+
+  /* İlerleme */
+  .prog-wrap{margin-bottom:.5rem}
+  .prog-bar{background:#1a2738;border-radius:6px;height:5px;overflow:hidden;margin-bottom:.3rem}
+  .prog-fill{height:100%;background:linear-gradient(90deg,#1d9e75,#56cfe1);border-radius:6px;width:0%;transition:width .4s}
+  .prog-label{font-size:.72rem;color:#5a7a94;text-align:right}
+
+  /* Ses ayarları */
+  .settings{background:#1a2738;border-radius:12px;padding:.8rem 1rem;margin-bottom:1rem}
+  .settings-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#5a7a94;margin-bottom:.7rem}
+  .voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.6rem}
+  .voice-item label{font-size:.7rem;font-weight:700;display:block;margin-bottom:.3rem}
+  .elif-col label{color:#f4a261}
+  .mert-col label{color:#56cfe1}
+  select{width:100%;background:#0f1923;border:1px solid #243447;color:#f0ede8;border-radius:7px;padding:.3rem .5rem;font-size:.75rem;font-family:'Nunito',sans-serif;cursor:pointer;outline:none}
+  .speed-row{display:flex;align-items:center;gap:.7rem}
+  .speed-row span{font-size:.75rem;color:#7a9ab5;white-space:nowrap}
+  input[type=range]{flex:1;accent-color:#1d9e75;cursor:pointer;height:4px}
+  .speed-val{font-size:.75rem;color:#f0ede8;min-width:34px;text-align:right}
+
+  /* Segment ayırıcı */
+  .segment{margin-bottom:.5rem}
+  .seg-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:.2rem .7rem;border-radius:20px;display:inline-block;margin-bottom:.5rem}
+  .seg-dialog{background:#1d9e7520;color:#1d9e75;border:1px solid #1d9e7540}
+  .seg-summary{background:#f4a26120;color:#f4a261;border:1px solid #f4a26140}
+
+  /* Diyalog satırları */
+  .line{border-radius:10px;padding:.75rem 1rem;margin-bottom:.5rem;opacity:.45;border:2px solid transparent;transition:all .25s}
+  .line.elif{background:#1a2738}
+  .line.mert{background:#162030;margin-left:5%}
+  .line.narrator{background:#1a2030;margin:0;border-radius:8px;font-style:italic}
+  .line.active{opacity:1;transform:scale(1.01)}
+  .line.elif.active{border-color:#f4a261}
+  .line.mert.active{border-color:#56cfe1}
+  .line.narrator.active{border-color:#1d9e75}
+  .speaker{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.25rem}
+  .elif .speaker{color:#f4a261}
+  .mert .speaker{color:#56cfe1}
+  .narrator .speaker{color:#1d9e75}
+  .text{font-size:.88rem;line-height:1.65;color:#c8c4be}
+  .line.active .text{color:#f0ede8}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="topic-badge" id="topic-badge">Sosyal Öğrenme Kuramları</div>
+    <h1 id="main-title">Bandura & Vygotsky</h1>
+    <div class="meta" id="main-meta">İki Öğretmen Adayının Sohbeti • ~8 dakika</div>
+  </div>
+
+  <button class="big-play" id="btn-play" onclick="startPlay()">▶ Dinlemeye Başla</button>
+
+  <div class="mini-controls">
+    <button class="btn btn-pause" id="btn-pause" onclick="togglePause()" disabled>⏸ Duraklat</button>
+    <button class="btn btn-stop" id="btn-stop" onclick="stopPlay()" disabled>⏹ Durdur</button>
+  </div>
+
+  <div class="prog-wrap">
+    <div class="prog-bar"><div class="prog-fill" id="progress"></div></div>
+    <div class="prog-label" id="prog-text">0 / 0</div>
+  </div>
+
+  <div class="settings">
+    <div class="settings-title">Ses Ayarları</div>
+    <div class="voice-grid">
+      <div class="voice-item elif-col">
+        <label>Elif (Kadın)</label>
+        <select id="elif-voice"></select>
+      </div>
+      <div class="voice-item mert-col">
+        <label>Mert (Erkek)</label>
+        <select id="mert-voice"></select>
+      </div>
+    </div>
+    <div class="speed-row">
+      <span>Konuşma hızı:</span>
+      <input type="range" id="speed" min="0.6" max="1.5" step="0.05" value="0.95" oninput="document.getElementById('speed-val').textContent=parseFloat(this.value).toFixed(2)+'x'">
+      <span class="speed-val" id="speed-val">0.95x</span>
+    </div>
+  </div>
+
+  <!-- DİYALOG -->
+  <div class="segment">
+    <span class="seg-label seg-dialog">Sohbet</span>
+    <div id="dialog-lines"></div>
+  </div>
+
+  <!-- SESLİ ÖZET -->
+  <div class="segment">
+    <span class="seg-label seg-summary">Sesli Özet</span>
+    <div id="summary-lines"></div>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+// ŞABLON — Sadece bu bloğu değiştir, yeni konu için
+// ============================================================
+const CONFIG = {
+  badge: "Sosyal Öğrenme Kuramları",
+  title: "Bandura & Vygotsky",
+  meta: "İki Öğretmen Adayının Sohbeti • ~8 dakika",
+  speaker1: "Elif",   // kadın
+  speaker2: "Mert",   // erkek
+};
+
+const DIALOG = [
+  {s:1, t:"Mert, sana bir şey soracağım. Bugün hocamız hem Bandura'dan hem de Vygotsky'den bahsetti. İkisi de sosyal öğrenme kuramı diyor. Peki ne farkları var bunların?"},
+  {s:2, t:"Ben de tam bunu düşünüyordum. İkisi de öğrenme sosyal bir süreçtir diyor ama bakış açıları çok farklı aslında."},
+  {s:1, t:"Nasıl yani? İkisi de başkalarından öğrenmeyi anlatmıyor mu?"},
+  {s:2, t:"Evet ama Bandura'da sen pasif bir gözlemcisin. Birini izliyorsun, onun ne yaptığını, ödül mü ceza mı aldığını görüyorsun ve buna göre davranıyorsun. Bobo doll deneyini hatırlıyor musun?"},
+  {s:1, t:"Tabii. Çocuk yetişkinin bebeğe vurduğunu izliyor, sonra aynısını yapıyor."},
+  {s:2, t:"Aynen. Orada bir etkileşim yok. Çocuk sadece seyrediyor. Yetişkin onun varlığından bile habersiz. Öğrenme tek yönlü — gözlemden davranışa."},
+  {s:1, t:"Peki Vygotsky'de ne farklı?"},
+  {s:2, t:"Vygotsky'de öğrenme ancak etkileşimle olur. Karşındaki sana bir şey göstermekle kalmaz, seninle konuşur, seni yönlendirir, sorular sorar, geri bildirim verir. Bir tür ortaklık var."},
+  {s:1, t:"Yani Bandura'da model sana bakmıyor bile, Vygotsky'de ise öğreten seninle aktif olarak ilgileniyor?"},
+  {s:2, t:"Kesinlikle! Güzel özetledin. Bandura'da bak ve öğren var, Vygotsky'de birlikte yap ve öğren var."},
+  {s:1, t:"Peki bir de şu ZPD meselesi var. Yakınsak Gelişim Alanı. Bu Bandura'da yok mu?"},
+  {s:2, t:"Yok. ZPD tamamen Vygotsky'ye ait. Çocuğun tek başına yapabildiği bir düzey var. Bir de yardım alırsa yapabileceği bir üst düzey var. İşte bu ikisi arasındaki boşluk ZPD."},
+  {s:1, t:"Yani öğretmenin görevi tam olarak o boşluğu görmek ve oraya girmek mi?"},
+  {s:2, t:"Aynen öyle. Ve Vygotsky bunu iskele kurmak olarak tanımlıyor. Bina yapılırken iskeleler destek olur, bina tamamlanınca kaldırılır. Öğretmen de öyle — başta çok destek verir, öğrenci güçlendikçe desteği azaltır."},
+  {s:1, t:"Bandura'da böyle bir iskele yok yani."},
+  {s:2, t:"Yok. Bandura'da destek değil, model var. Sen modeli izlersin, içselleştirirsin, ödüllendirilip ödüllendirilmediğini görürsün ve harekete geçersin ya da geçmezsin."},
+  {s:1, t:"Bir de öz-yeterlilik vardı Bandura'da. O ne anlama geliyor tam olarak?"},
+  {s:2, t:"Öz-yeterlilik, kişinin bir görevi başarabileceğine olan inancı. Sen bir davranışı yapabilirsin ama ben bunu yaparım diye inanmıyorsan yapamazsın. Bandura'ya göre bu inanç öğrenmenin motorudur."},
+  {s:1, t:"Vygotsky'de öz-yeterlilik yok mu peki?"},
+  {s:2, t:"Doğrudan kavram olarak yok. Ama Vygotsky'de de öğrenci giderek özerkleşiyor. Başta dışarıdan destekle yapıyor, sonunda içselleştirerek tek başına yapıyor. Bu da bir anlamda öz-yeterliliğin inşası gibi aslında."},
+  {s:1, t:"Yani ikisi birbirini tamamlıyor diyebilir miyiz?"},
+  {s:2, t:"Diyebiliriz. Bandura diyor ki: doğru modeli gör, güdülen, kendine inan, uygula. Vygotsky diyor ki: doğru kişiyle etkileşime gir, o seni desteklesin, oradan içselleştir."},
+  {s:1, t:"Peki sınıfta ikisini nasıl kullanırdık? Sen öğretmen olsan mesela."},
+  {s:2, t:"Ben şöyle yapardım. Problem çözme öğretiyorum diyelim. Önce Bandura: tahtaya çıkar, problemi sesli düşünerek çözerim. Öğrenciler izler, modeli görür."},
+  {s:1, t:"Sonra?"},
+  {s:2, t:"Sonra Vygotsky'ye geçerim. Öğrencilerin nerede takıldığını görürüm. Her birine o ZPD noktasında iskele kurarım. Soru sorarım, ipucu veririm ama cevabı vermem. Yapabildiğini görünce desteği çekerim."},
+  {s:1, t:"Yani önce model, sonra destekli uygulama, sonra bağımsızlık."},
+  {s:2, t:"Tam olarak. Modern öğretim modellerinin çoğu bu ikisini harmanlıyor zaten."},
+  {s:1, t:"Şimdi çok daha net oturdu. İkisi de sosyal öğrenme dese de Bandura gözleme, Vygotsky etkileşime vurgu yapıyor."},
+  {s:2, t:"Bir de şunu ekleyelim. Bandura bireyden başlıyor — kişinin ne gördüğü, ne hissettiği, ne inandığı. Vygotsky sosyalden başlıyor — önce dışarıda başkasıyla, sonra içeride kendi başına."},
+  {s:1, t:"Dışarıdan içeriye doğru bir yolculuk yani."},
+  {s:2, t:"Tam olarak. Vygotsky'nin ünlü sözü var: her yüksek zihinsel işlev önce iki kişi arasında, sonra kişinin kendi içinde gerçekleşir."},
+  {s:1, t:"Peki sınavda bu ikisini karıştırırsak ne olur?"},
+  {s:2, t:"O zaman hocamız bize ZPD'nin altında kaldığımızı söyler ve iskele kurar!"},
+  {s:1, t:"Çok doğru! Tamam, netleşti. Teşekkürler Mert."},
+  {s:2, t:"Rica ederim Elif. Şimdi bir de sesli özeti dinleyelim, aklımızda pekişsin."},
+];
+
+// SESLİ ÖZET — görsel tablo yerine bu okunur
+const SUMMARY = [
+  {s:0, t:"Şimdi Bandura ve Vygotsky arasındaki temel farkları birlikte özetleyelim."},
+  {s:1, t:"Birinci fark: Öğrenme mekanizması. Bandura'da gözlem ve model alma. Vygotsky'de etkileşim ve rehberlik."},
+  {s:2, t:"İkinci fark: Sosyal rol. Bandura'da tek yönlü — öğrenen izler. Vygotsky'de çift yönlü — öğreten ve öğrenen birlikte çalışır."},
+  {s:1, t:"Üçüncü fark: Temel kavram. Bandura'nın temel kavramı öz-yeterlilik — bireyin başarabileceğine olan inancı. Vygotsky'ninkiler ZPD ve İskele."},
+  {s:2, t:"Dördüncü fark: Öğretenin rolü. Bandura'da model — farkında bile olmayabilir. Vygotsky'de Daha Bilgili Diğeri — aktif olarak rehberlik eder."},
+  {s:1, t:"Beşinci fark: Başlangıç noktası. Bandura bireyden başlar — ne görüyor, ne hissediyor, ne inanıyor. Vygotsky sosyal çevreden başlar — önce dışarıda, sonra içeride."},
+  {s:2, t:"Kısaca: Bandura'da bak ve öğren. Vygotsky'de birlikte yap ve öğren. İkisi birbirini tamamlar."},
+  {s:0, t:"Bu sohbet Bandura ve Vygotsky'nin Sosyal Öğrenme Kuramları konusundaydı. Başarılar!"},
+];
+// ============================================================
+
+document.getElementById('topic-badge').textContent = CONFIG.badge;
+document.getElementById('main-title').textContent = CONFIG.title;
+document.getElementById('main-meta').textContent = CONFIG.meta;
+
+const synth = window.speechSynthesis;
+let allLines = [];
+let currentIdx = -1, paused = false, utterance = null;
+
+function buildLines() {
+  // Diyalog
+  const dl = document.getElementById('dialog-lines');
+  DIALOG.forEach((l, i) => {
+    const div = document.createElement('div');
+    const cls = l.s === 1 ? 'elif' : 'mert';
+    div.className = 'line ' + cls;
+    div.id = 'al' + allLines.length;
+    div.innerHTML = `<div class="speaker">${l.s===1?CONFIG.speaker1:CONFIG.speaker2}</div><div class="text">${l.t}</div>`;
+    dl.appendChild(div);
+    allLines.push({...l, elId:'al'+(allLines.length)});
+  });
+  // Özet
+  const sl = document.getElementById('summary-lines');
+  SUMMARY.forEach((l, i) => {
+    const div = document.createElement('div');
+    const cls = l.s === 0 ? 'narrator' : (l.s === 1 ? 'elif' : 'mert');
+    div.className = 'line ' + cls;
+    div.id = 'al' + allLines.length;
+    div.innerHTML = `<div class="speaker">${l.s===0?'Anlatıcı':(l.s===1?CONFIG.speaker1:CONFIG.speaker2)}</div><div class="text">${l.t}</div>`;
+    sl.appendChild(div);
+    allLines.push({...l, elId:'al'+(allLines.length)});
+  });
+  // fix ids
+  allLines.forEach((l,i) => { l.elId = 'al'+i; document.getElementById('al'+i) && (document.getElementById('al'+i).id = 'al'+i); });
+  // rebuild
+  dl.innerHTML = ''; sl.innerHTML = '';
+  allLines.forEach((l,i) => {
+    const cls = l.s===0?'narrator':(l.s===1?'elif':'mert');
+    const spk = l.s===0?'Anlatıcı':(l.s===1?CONFIG.speaker1:CONFIG.speaker2);
+    const div = document.createElement('div');
+    div.className='line '+cls; div.id='al'+i;
+    div.innerHTML=`<div class="speaker">${spk}</div><div class="text">${l.t}</div>`;
+    i < DIALOG.length ? dl.appendChild(div) : sl.appendChild(div);
+  });
+  document.getElementById('prog-text').textContent = '0 / '+allLines.length;
+}
+buildLines();
+
+function loadVoices() {
+  const voices = synth.getVoices();
+  const tr = voices.filter(v => v.lang && v.lang.startsWith('tr'));
+  const pool = tr.length ? tr : voices;
+  ['elif-voice','mert-voice'].forEach(id => {
+    const sel = document.getElementById(id);
+    sel.innerHTML = '';
+    pool.forEach((v,i) => {
+      const o = document.createElement('option');
+      o.value = voices.indexOf(v);
+      o.textContent = v.name;
+      sel.appendChild(o);
+    });
+  });
+  // otomatik kadın/erkek seç
+  const allV = synth.getVoices();
+  const fem = allV.findIndex(v => /female|kadin|woman/i.test(v.name));
+  const mal = allV.findIndex(v => /male|erkek|man/i.test(v.name) && !/female/i.test(v.name));
+  const trPool = allV.filter(v => v.lang&&v.lang.startsWith('tr'));
+  if(trPool.length >= 2){
+    document.getElementById('elif-voice').value = allV.indexOf(trPool[0]);
+    document.getElementById('mert-voice').value = allV.indexOf(trPool[1]);
+  } else {
+    if(fem>=0) document.getElementById('elif-voice').value=fem;
+    if(mal>=0) document.getElementById('mert-voice').value=mal;
+  }
+}
+synth.addEventListener('voiceschanged', loadVoices);
+loadVoices();
+
+function getVoice(speakerNum) {
+  const id = speakerNum===1 ? 'elif-voice' : 'mert-voice';
+  const idx = parseInt(document.getElementById(id).value);
+  return synth.getVoices()[idx] || null;
+}
+
+function setActive(i) {
+  document.querySelectorAll('.line').forEach(l=>l.classList.remove('active'));
+  if(i>=0){
+    const el=document.getElementById('al'+i);
+    if(el){ el.classList.add('active'); el.scrollIntoView({behavior:'smooth',block:'center'}); }
+  }
+  const pct = i>=0 ? Math.round((i+1)/allLines.length*100) : 0;
+  document.getElementById('progress').style.width=pct+'%';
+  document.getElementById('prog-text').textContent=(i>=0?i+1:0)+' / '+allLines.length;
+}
+
+function startPlay(){
+  synth.cancel(); currentIdx=0; paused=false;
+  document.getElementById('btn-play').disabled=true;
+  document.getElementById('btn-pause').disabled=false;
+  document.getElementById('btn-stop').disabled=false;
+  playLine(0);
+}
+
+function playLine(i){
+  if(i>=allLines.length){stopPlay();return;}
+  currentIdx=i; setActive(i);
+  const l=allLines[i];
+  utterance=new SpeechSynthesisUtterance(l.t);
+  utterance.voice=getVoice(l.s===0?2:l.s);
+  utterance.rate=parseFloat(document.getElementById('speed').value);
+  utterance.lang='tr-TR';
+  utterance.onend=()=>{ if(!paused) setTimeout(()=>playLine(i+1), l.s===0?400:200); };
+  synth.speak(utterance);
+}
+
+function togglePause(){
+  if(paused){
+    paused=false; synth.resume();
+    document.getElementById('btn-pause').textContent='⏸ Duraklat';
+  } else {
+    paused=true; synth.pause();
+    document.getElementById('btn-pause').textContent='▶ Devam Et';
+  }
+}
+
+function stopPlay(){
+  synth.cancel(); paused=false; currentIdx=-1; setActive(-1);
+  document.getElementById('btn-play').disabled=false;
+  document.getElementById('btn-pause').disabled=true;
+  document.getElementById('btn-stop').disabled=true;
+  document.getElementById('btn-pause').textContent='⏸ Duraklat';
+}
+</script>
+</body>
+</html>

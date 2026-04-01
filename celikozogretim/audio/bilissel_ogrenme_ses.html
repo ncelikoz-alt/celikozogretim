@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bilişsel Öğrenme Kuramı — Öğretmen Adayları Sohbeti</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:#0a1628;color:#f0ede8;min-height:100vh;padding:1.5rem 1rem}
+  .container{max-width:680px;margin:0 auto}
+  .header{text-align:center;margin-bottom:1.5rem}
+  .topic-badge{display:inline-block;background:#0d1f3c;border:1px solid #2e5fa5;border-radius:20px;padding:.3rem 1rem;font-size:.75rem;font-weight:700;color:#85B7EB;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.6rem}
+  h1{font-size:1.3rem;font-weight:800;margin-bottom:.2rem}
+  .meta{font-size:.8rem;color:#4a6a94}
+  .big-play{width:100%;background:#185FA5;border:none;border-radius:14px;padding:1rem;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;color:#fff;cursor:pointer;margin-bottom:1rem;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:.6rem}
+  .big-play:hover{background:#0d4a8a}
+  .big-play:disabled{background:#0d1f3c;color:#4a6a94;cursor:not-allowed}
+  .mini-controls{display:flex;gap:.6rem;margin-bottom:1rem}
+  .btn{flex:1;border:none;border-radius:10px;padding:.55rem;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .15s}
+  .btn-pause{background:#f4a261;color:#0a1628}
+  .btn-pause:hover{background:#e0904f}
+  .btn-stop{background:#0d1f3c;color:#85B7EB;border:1px solid #2e5fa5}
+  .btn-stop:hover{background:#1a2f4c}
+  .btn:disabled{opacity:.35;cursor:not-allowed}
+  .prog-wrap{margin-bottom:.5rem}
+  .prog-bar{background:#0d1f3c;border-radius:6px;height:5px;overflow:hidden;margin-bottom:.3rem}
+  .prog-fill{height:100%;background:linear-gradient(90deg,#185FA5,#56cfe1);border-radius:6px;width:0%;transition:width .4s}
+  .prog-label{font-size:.72rem;color:#4a6a94;text-align:right}
+  .settings{background:#0d1f3c;border-radius:12px;padding:.8rem 1rem;margin-bottom:1rem}
+  .settings-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#4a6a94;margin-bottom:.7rem}
+  .voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.6rem}
+  .voice-item label{font-size:.7rem;font-weight:700;display:block;margin-bottom:.3rem}
+  .elif-col label{color:#f4a261}
+  .mert-col label{color:#56cfe1}
+  select{width:100%;background:#0a1628;border:1px solid #2e5fa5;color:#f0ede8;border-radius:7px;padding:.3rem .5rem;font-size:.75rem;font-family:'Nunito',sans-serif;cursor:pointer;outline:none}
+  .speed-row{display:flex;align-items:center;gap:.7rem}
+  .speed-row span{font-size:.75rem;color:#4a6a94;white-space:nowrap}
+  input[type=range]{flex:1;accent-color:#185FA5;cursor:pointer;height:4px}
+  .speed-val{font-size:.75rem;color:#f0ede8;min-width:34px;text-align:right}
+  .segment{margin-bottom:.5rem}
+  .seg-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:.2rem .7rem;border-radius:20px;display:inline-block;margin-bottom:.5rem}
+  .seg-dialog{background:#185FA530;color:#85B7EB;border:1px solid #185FA540}
+  .seg-summary{background:#f4a26130;color:#f4a261;border:1px solid #f4a26140}
+  .line{border-radius:10px;padding:.75rem 1rem;margin-bottom:.5rem;opacity:.4;border:2px solid transparent;transition:all .25s}
+  .line.elif{background:#0d1f3c}
+  .line.mert{background:#091628;margin-left:5%}
+  .line.narrator{background:#0a1a2a;margin:0;border-radius:8px;font-style:italic}
+  .line.active{opacity:1;transform:scale(1.01)}
+  .line.elif.active{border-color:#f4a261}
+  .line.mert.active{border-color:#56cfe1}
+  .line.narrator.active{border-color:#85B7EB}
+  .speaker{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.25rem}
+  .elif .speaker{color:#f4a261}
+  .mert .speaker{color:#56cfe1}
+  .narrator .speaker{color:#85B7EB}
+  .text{font-size:.88rem;line-height:1.65;color:#8a9ab8}
+  .line.active .text{color:#f0ede8}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="topic-badge">Bilişsel Öğrenme Kuramı</div>
+    <h1>Atkinson, Ausubel ve Bilişsel Öğrenme</h1>
+    <div class="meta">İki Öğretmen Adayının Sohbeti • ~9 dakika</div>
+  </div>
+
+  <button class="big-play" id="btn-play" onclick="startPlay()">▶ Dinlemeye Başla</button>
+  <div class="mini-controls">
+    <button class="btn btn-pause" id="btn-pause" onclick="togglePause()" disabled>⏸ Duraklat</button>
+    <button class="btn btn-stop" id="btn-stop" onclick="stopPlay()" disabled>⏹ Durdur</button>
+  </div>
+
+  <div class="prog-wrap">
+    <div class="prog-bar"><div class="prog-fill" id="progress"></div></div>
+    <div class="prog-label" id="prog-text">0 / 0</div>
+  </div>
+
+  <div class="settings">
+    <div class="settings-title">Ses Ayarları</div>
+    <div class="voice-grid">
+      <div class="voice-item elif-col"><label>Elif (Kadın)</label><select id="elif-voice"></select></div>
+      <div class="voice-item mert-col"><label>Mert (Erkek)</label><select id="mert-voice"></select></div>
+    </div>
+    <div class="speed-row">
+      <span>Konuşma hızı:</span>
+      <input type="range" id="speed" min="0.6" max="1.5" step="0.05" value="0.95" oninput="document.getElementById('speed-val').textContent=parseFloat(this.value).toFixed(2)+'x'">
+      <span class="speed-val" id="speed-val">0.95x</span>
+    </div>
+  </div>
+
+  <div class="segment">
+    <span class="seg-label seg-dialog">Sohbet</span>
+    <div id="dialog-lines"></div>
+  </div>
+
+  <div class="segment">
+    <span class="seg-label seg-summary">Sesli Özet</span>
+    <div id="summary-lines"></div>
+  </div>
+</div>
+
+<script>
+const DIALOG = [
+  {s:1,t:"Mert, bilişsel öğrenme kuramını anlamak için nereden başlamak gerekiyor sence?"},
+  {s:2,t:"En temelden başlayalım. Bilişsel öğrenme kuramı şu soruyu soruyor: Bilgi zihinde nasıl işlenir? Yani öğrenmeyi bir süreç olarak ele alıyor — bilgi dışarıdan gelir, zihin onu işler, depolar, gerektiğinde geri çağırır."},
+  {s:1,t:"Davranışçılıktan farkı tam olarak bu mu?"},
+  {s:2,t:"Aynen. Pavlov ve Skinner diyordu ki: uyarıcıya tepkiyi ölç, pekiştir, öğrenme budur. Zihnin içine bakmıyorlardı. Bilişselciler ise dedi ki: hayır, zihnin içinde çok şey oluyor — dikkat, bellek, düşünme, anlama. Bunları görmezden gelemeyiz."},
+  {s:1,t:"Atkinson ve Shiffrin'in bilgi işleme kuramı tam buradan mı geliyor?"},
+  {s:2,t:"Evet. Atkinson ve Shiffrin 1968'de dediler ki: bilgi önce duyusal belleğe girer — gözler, kulaklar, tüm duyular. Ama burada çok kısa kalır, bir iki saniye. Dikkat edilmezse kaybolur."},
+  {s:1,t:"Dikkat çok kritik o zaman."},
+  {s:2,t:"Kritik. Dikkat edilen bilgi kısa süreli belleğe geçer. Ama orada da sınır var — yaklaşık yedi birim, yirmi saniye. Tekrar edilmezse yine kaybolur. Tekrar edilirse ve anlamlandırılırsa uzun süreli belleğe geçer."},
+  {s:1,t:"Uzun süreli bellekte ne kadar kalır?"},
+  {s:2,t:"Sınırsız kapasite, sınırsız süre. Yıllarca, hatta ömür boyu. Ama dikkat et — buraya ulaşmak için ya tekrar gerekir ya da anlamlandırma. İşte burada Ausubel devreye giriyor."},
+  {s:1,t:"Ausubel'in anlamlı öğrenmesi bilgi işleme kuramıyla nasıl bağlanıyor?"},
+  {s:2,t:"Şöyle düşün. Atkinson bilginin hangi yollarla işlendiğini açıklıyor — duyusal, kısa süreli, uzun süreli. Ausubel ise diyor ki: bu yolculuğun kalıcı olması için yeni bilgi mutlaka önceki bilgiyle anlamlı biçimde ilişkilendirilmeli."},
+  {s:1,t:"Yani Atkinson mekanizmayı, Ausubel kalıcılığın koşulunu açıklıyor."},
+  {s:2,t:"Mükemmel özetledin. Atkinson nasıl işlendiğini, Ausubel neden kalıcı olduğunu açıklıyor. İkisi birbirini tamamlıyor."},
+  {s:1,t:"Ausubel'in ön düzenleyici kavramı var. O ne demek tam olarak?"},
+  {s:2,t:"Ön düzenleyici, yeni konuya geçmeden önce verilen köprü bilgi. Ausubel diyor ki — öğrencinin zihninde yeni bilginin tutunacağı bir çengel olmalı. Öğretmen o çengeli önce hazırlar, sonra yeni bilgiyi asar."},
+  {s:1,t:"Somut örnek verebilir misin?"},
+  {s:2,t:"Fotosentezi anlatmadan önce öğretmen der ki: bitkiler güneşten enerji alır, tıpkı bizim yemek yememiz gibi. Bu tek cümle ön düzenleyicidir. Öğrencinin zihninde köprü kuruldu — şimdi fotosentez o köprüye tutunabilir."},
+  {s:1,t:"Peki Ausubel'i ezber öğrenmeden ayıran ne?"},
+  {s:2,t:"Ausubel'in en çarpıcı tespiti bu. Ezber öğrenmede yeni bilgi önceki bilgiyle ilişkilendirilmeden mekanik olarak depolanır. Kısa sürede unutulur. Anlamlı öğrenmede ise yeni bilgi mevcut bilişsel yapıya entegre olur — bu yüzden kalıcıdır ve başka durumlara transfer edilebilir."},
+  {s:1,t:"Peki bilişsel öğrenme kuramı yapılandırmacılıkla nasıl ilişkili? İkisi çok benzer geldi bana."},
+  {s:2,t:"Çok güzel soru. İkisi arasında hem benzerlik hem fark var. Benzerlikleri şu: ikisi de zihnin aktif rol oynadığını söylüyor, ikisi de önceki bilginin önemini vurguluyor, ikisi de anlamayı ön plana koyuyor."},
+  {s:1,t:"Peki fark nerede?"},
+  {s:2,t:"Bilişselciler diyor ki: bilgi dışarıda var, zihin onu alır ve işler. Yapılandırmacılar ise diyor ki: bilgi yoktur — birey onu yaratır. Bilişselciler bilgiyi işleyen zihin, yapılandırmacılar bilgiyi inşa eden zihin."},
+  {s:1,t:"Yani Atkinson ve Ausubel için bilgi var — onu doğru işlemek gerek. Piaget ve Bruner için ise bilgi bireyin deneyimiyle inşa ediliyor."},
+  {s:2,t:"Tam olarak. Bu yüzden Ausubel bilişsel kategoride ağır basıyor — çünkü anlamlı öğrenme önceki bilişsel yapıya bağlanmayı anlatıyor, sıfırdan inşa etmeyi değil. Bilgi zaten var, zihin onu yeni bilgiyle ilişkilendiriyor."},
+  {s:1,t:"Peki sınıfta bilişsel öğrenme kuramı nasıl görünür?"},
+  {s:2,t:"Somutlaştıralım. Bilişselci öğretmen şunları yapar: önce öğrencinin dikkatini çeker — çünkü dikkat olmadan bilgi kısa süreli belleğe giremez. Sonra yeni bilgiyi önceki bilgiye bağlar — Ausubel'in ön düzenleyicisi. Sonra tekrar ve anlamlandırma fırsatı verir — uzun süreli belleğe transfer için."},
+  {s:1,t:"Sınav da buna göre mi yapılmalı?"},
+  {s:2,t:"Atkinson'a göre sınavda olan şey geri çağırma — retrieval. Bilgi uzun süreli bellekte var, ama oradan çekilip kullanılabiliyor mu? Eğer anlayarak öğrenildiyse çekilir. Ezberle öğrenildiyse sınav baskısında erişilemeyebilir."},
+  {s:1,t:"Yani bilişsel öğrenme kuramı ezber öğrenmenin tam karşısında."},
+  {s:2,t:"Kesinlikle. Hem Atkinson hem Ausubel, hem de bilişsel kuramın tamamı diyor ki: gerçek öğrenme anlamayı gerektirir. Tekrar tek başına yetmez — anlamlandırma şart."},
+  {s:1,t:"Çok netleşti. Peki sesli özeti dinleyelim mi?"},
+  {s:2,t:"Gel özetleyelim."},
+];
+
+const SUMMARY = [
+  {s:0,t:"Bilişsel öğrenme kuramını beş temel başlıkta özetleyelim."},
+  {s:1,t:"Birinci madde: Bilişsel öğrenme kuramı, öğrenmeyi zihinsel bir süreç olarak ele alır. Bilgi dışarıdan gelir, zihin onu işler. Davranışçılıktan temel farkı budur — zihnin içi önemlidir."},
+  {s:2,t:"İkinci madde: Atkinson ve Shiffrin'in bilgi işleme modeline göre bilgi üç aşamadan geçer: duyusal bellek, kısa süreli bellek, uzun süreli bellek. Her aşamada dikkat ve anlamlandırma şarttır."},
+  {s:1,t:"Üçüncü madde: Ausubel'e göre yeni bilgi, önceki bilgiyle anlamlı biçimde ilişkilendirildiğinde kalıcı olur. Ön düzenleyici bu köprüyü kurar. Ezber öğrenme bu bağı kurmaz — bu yüzden geçicidir."},
+  {s:2,t:"Dördüncü madde: Bilişsel öğrenme kuramı ile yapılandırmacılık arasındaki fark şudur — bilişselciler bilgiyi işleyen zihni, yapılandırmacılar bilgiyi inşa eden zihni anlatır. Ausubel bilişsel ağırlıklıdır çünkü anlamlandırma önceki yapıya bağlanmayı gerektirir."},
+  {s:1,t:"Beşinci madde: Sınıfta bilişselci öğretmen dikkat çeker, ön düzenleyici verir, yeni bilgiyi eskiyle ilişkilendirir, anlamlandırma fırsatı sunar. Hedef uzun süreli belleğe kalıcı transfer ve geri çağırmadır."},
+  {s:0,t:"Bilişsel öğrenme kuramının özü şudur: Öğrenme zihinsel bir süreçtir. Bilgiyi doğru işlemek, anlamlandırmak ve önceki bilgiyle ilişkilendirmek kalıcı öğrenmeyi sağlar."},
+];
+
+const synth=window.speechSynthesis;
+let allLines=[],currentIdx=-1,paused=false,utterance=null;
+
+function buildLines(){
+  const dl=document.getElementById('dialog-lines');
+  const sl=document.getElementById('summary-lines');
+  DIALOG.forEach((l,i)=>{
+    const cls=l.s===1?'elif':'mert';
+    const spk=l.s===1?'Elif':'Mert';
+    const div=document.createElement('div');
+    div.className='line '+cls;div.id='al'+allLines.length;
+    div.innerHTML=`<div class="speaker">${spk}</div><div class="text">${l.t}</div>`;
+    dl.appendChild(div);allLines.push({...l});
+  });
+  SUMMARY.forEach((l,i)=>{
+    const cls=l.s===0?'narrator':(l.s===1?'elif':'mert');
+    const spk=l.s===0?'Anlatıcı':(l.s===1?'Elif':'Mert');
+    const div=document.createElement('div');
+    div.className='line '+cls;div.id='al'+allLines.length;
+    div.innerHTML=`<div class="speaker">${spk}</div><div class="text">${l.t}</div>`;
+    sl.appendChild(div);allLines.push({...l});
+  });
+  document.querySelectorAll('.line').forEach((el,i)=>el.id='al'+i);
+  document.getElementById('prog-text').textContent='0 / '+allLines.length;
+}
+buildLines();
+
+function loadVoices(){
+  const voices=synth.getVoices();
+  const tr=voices.filter(v=>v.lang&&v.lang.startsWith('tr'));
+  const pool=tr.length?tr:voices;
+  ['elif-voice','mert-voice'].forEach(id=>{
+    const sel=document.getElementById(id);sel.innerHTML='';
+    pool.forEach((v,i)=>{
+      const o=document.createElement('option');
+      o.value=voices.indexOf(v);o.textContent=v.name;sel.appendChild(o);
+    });
+  });
+  if(tr.length>=2){
+    document.getElementById('elif-voice').value=voices.indexOf(tr[0]);
+    document.getElementById('mert-voice').value=voices.indexOf(tr[1]);
+  }
+}
+synth.addEventListener('voiceschanged',loadVoices);loadVoices();
+
+function getVoice(s){
+  const id=s===1?'elif-voice':'mert-voice';
+  const idx=parseInt(document.getElementById(id).value);
+  return synth.getVoices()[idx]||null;
+}
+
+function setActive(i){
+  document.querySelectorAll('.line').forEach(l=>l.classList.remove('active'));
+  if(i>=0){const el=document.getElementById('al'+i);if(el){el.classList.add('active');el.scrollIntoView({behavior:'smooth',block:'center'});}}
+  const pct=i>=0?Math.round((i+1)/allLines.length*100):0;
+  document.getElementById('progress').style.width=pct+'%';
+  document.getElementById('prog-text').textContent=(i>=0?i+1:0)+' / '+allLines.length;
+}
+
+function startPlay(){
+  synth.cancel();currentIdx=0;paused=false;
+  document.getElementById('btn-play').disabled=true;
+  document.getElementById('btn-pause').disabled=false;
+  document.getElementById('btn-stop').disabled=false;
+  playLine(0);
+}
+
+function playLine(i){
+  if(i>=allLines.length){stopPlay();return;}
+  currentIdx=i;setActive(i);
+  const l=allLines[i];
+  utterance=new SpeechSynthesisUtterance(l.t);
+  utterance.voice=getVoice(l.s===0?2:l.s);
+  utterance.rate=parseFloat(document.getElementById('speed').value);
+  utterance.lang='tr-TR';
+  utterance.onend=()=>{if(!paused)setTimeout(()=>playLine(i+1),l.s===0?400:200);};
+  synth.speak(utterance);
+}
+
+function togglePause(){
+  if(paused){paused=false;synth.resume();document.getElementById('btn-pause').textContent='⏸ Duraklat';}
+  else{paused=true;synth.pause();document.getElementById('btn-pause').textContent='▶ Devam Et';}
+}
+
+function stopPlay(){
+  synth.cancel();paused=false;currentIdx=-1;setActive(-1);
+  document.getElementById('btn-play').disabled=false;
+  document.getElementById('btn-pause').disabled=true;
+  document.getElementById('btn-stop').disabled=true;
+  document.getElementById('btn-pause').textContent='⏸ Duraklat';
+}
+</script>
+</body>
+</html>

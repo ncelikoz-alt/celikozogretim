@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kuram – Dinle | ÖİY Podcast</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #0f1b2d;
+    color: #e8e8e8;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .player-card {
+    background: linear-gradient(160deg, #1a2e4a 0%, #0f1b2d 100%);
+    border: 1px solid #2a4a6b;
+    border-radius: 20px;
+    max-width: 680px;
+    width: 100%;
+    padding: 36px 40px 40px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+  }
+
+  .badge {
+    display: inline-block;
+    background: #1e3a5f;
+    color: #7eb8f7;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+    border: 1px solid #2a5080;
+  }
+
+  .title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.3;
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: #7a9ab8;
+    margin-bottom: 28px;
+    font-style: italic;
+  }
+
+  /* Konuşmacılar */
+  .speakers {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 28px;
+  }
+
+  .speaker {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .speaker-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .speaker-avatar.prof { background: #1e4a7a; color: #7eb8f7; }
+  .speaker-avatar.student { background: #1a3a2a; color: #7ed9a8; }
+
+  .speaker-name { font-size: 12px; color: #8aabb8; }
+  .speaker-role { font-size: 10px; color: #5a7a8a; }
+
+  /* Bölüm listesi */
+  .chapters {
+    margin-bottom: 28px;
+    border: 1px solid #1e3a5f;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .chapter {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+    border-bottom: 1px solid #1a2e45;
+  }
+
+  .chapter:last-child { border-bottom: none; }
+
+  .chapter:hover { background: #1a3050; }
+  .chapter.active { background: #1e3a60; }
+
+  .chapter-num {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #1a2e45;
+    color: #7eb8f7;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .chapter.active .chapter-num {
+    background: #2a5a9a;
+    color: #fff;
+  }
+
+  .chapter-info { flex: 1; }
+  .chapter-title { font-size: 13px; font-weight: 600; color: #d0e0f0; }
+  .chapter-duration { font-size: 11px; color: #5a7a8a; margin-top: 2px; }
+
+  .chapter-play {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #1a3050;
+    border: 1px solid #2a4a6b;
+    color: #7eb8f7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+
+  .chapter-play:hover { background: #2a5a9a; }
+  .chapter.active .chapter-play { background: #2a5a9a; border-color: #4a8ad0; }
+
+  /* Şu an çalan */
+  .now-playing {
+    background: #111e30;
+    border: 1px solid #1e3a5f;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .now-playing-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #5a7a9a;
+    margin-bottom: 8px;
+  }
+
+  .now-playing-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #c0d8f0;
+    margin-bottom: 4px;
+  }
+
+  .now-playing-speaker {
+    font-size: 12px;
+    color: #5a8aaa;
+    margin-bottom: 16px;
+  }
+
+  /* Transcript */
+  .transcript {
+    font-size: 13px;
+    line-height: 1.8;
+    color: #a0b8cc;
+    max-height: 160px;
+    overflow-y: auto;
+    padding-right: 8px;
+  }
+
+  .transcript::-webkit-scrollbar { width: 4px; }
+  .transcript::-webkit-scrollbar-track { background: #111e30; }
+  .transcript::-webkit-scrollbar-thumb { background: #2a4a6b; border-radius: 4px; }
+
+  .transcript .prof-line { color: #7eb8f7; font-weight: 600; }
+  .transcript .student-line { color: #7ed9a8; font-weight: 600; }
+
+  /* Progress */
+  .progress-bar {
+    height: 4px;
+    background: #1a2e45;
+    border-radius: 4px;
+    margin: 16px 0 10px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2a6ab0, #4a9ae0);
+    border-radius: 4px;
+    transition: width 0.3s;
+  }
+
+  .time-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #4a6a8a;
+    margin-bottom: 16px;
+  }
+
+  /* Kontroller */
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+  }
+
+  .ctrl-btn {
+    background: none;
+    border: none;
+    color: #6a9ab8;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+    padding: 4px;
+  }
+
+  .ctrl-btn:hover { color: #a0d0f0; }
+
+  .play-btn {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2a6ab0, #1a4a80);
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 20px rgba(42,106,176,0.4);
+    transition: all 0.2s;
+  }
+
+  .play-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 24px rgba(42,106,176,0.6);
+  }
+
+  /* TTS Status */
+  .tts-status {
+    text-align: center;
+    font-size: 11px;
+    color: #4a6a8a;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #1a2e45;
+  }
+
+  .tts-dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #2a6ab0;
+    margin-right: 6px;
+    vertical-align: middle;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .tts-dot.idle { background: #3a5a6a; animation: none; }
+
+  /* Ses kontrolü */
+  .volume-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .vol-icon { color: #4a6a8a; flex-shrink: 0; }
+
+  .vol-slider {
+    flex: 1;
+    height: 3px;
+    -webkit-appearance: none;
+    background: #1a2e45;
+    border-radius: 3px;
+    outline: none;
+  }
+
+  .vol-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #2a6ab0;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="player-card">
+
+  <div class="badge">🎧 Podcast · Bölüm 1.5</div>
+  <div class="title">Kuram: Derinlemesine Bir Bakış</div>
+  <div class="subtitle">Sitedeki okuma metnini tamamlayan genişletilmiş tartışma</div>
+
+  <div class="speakers">
+    <div class="speaker">
+      <div class="speaker-avatar prof">P</div>
+      <div>
+        <div class="speaker-name">Prof. Dr. Nadir Çeliköz</div>
+        <div class="speaker-role">Akademisyen</div>
+      </div>
+    </div>
+    <div class="speaker">
+      <div class="speaker-avatar student">Ö</div>
+      <div>
+        <div class="speaker-name">Öğrenci Sesi</div>
+        <div class="speaker-role">Aday Öğretmen</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bölümler -->
+  <div class="chapters" id="chapterList"></div>
+
+  <!-- Şu an çalan -->
+  <div class="now-playing">
+    <div class="now-playing-label">▶ Şu an çalıyor</div>
+    <div class="now-playing-title" id="npTitle">Bir bölüm seçin</div>
+    <div class="now-playing-speaker" id="npSpeaker"></div>
+
+    <div class="transcript" id="transcript">
+      <p style="color:#3a5a6a; font-style:italic;">Dinlemeye başlamak için bir bölüme tıklayın.</p>
+    </div>
+
+    <div class="progress-bar" id="progressBar">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <div class="time-row">
+      <span id="timeElapsed">0:00</span>
+      <span id="timeTotal">0:00</span>
+    </div>
+
+    <div class="controls">
+      <button class="ctrl-btn" id="prevBtn" onclick="prevChapter()" title="Önceki bölüm">
+        <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+      </button>
+      <button class="play-btn" id="playBtn" onclick="togglePlay()">
+        <svg id="playIcon" width="24" height="24" fill="white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <button class="ctrl-btn" id="nextBtn" onclick="nextChapter()" title="Sonraki bölüm">
+        <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+      </button>
+    </div>
+
+    <div class="volume-row">
+      <svg class="vol-icon" width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+      <input type="range" class="vol-slider" id="volSlider" min="0" max="100" value="90" oninput="setVolume(this.value)">
+    </div>
+  </div>
+
+  <div class="tts-status">
+    <span class="tts-dot idle" id="ttsIndicator"></span>
+    <span id="ttsLabel">Tarayıcı ses motoru hazır</span>
+  </div>
+
+</div>
+
+<script>
+// =============================================
+// PODCAST İÇERİĞİ — KURAM (DERİNLEŞTİRME)
+// =============================================
+const chapters = [
+  {
+    title: "Kuram Neden Sadece Bilgiden İbaret Değildir?",
+    speaker: "Prof. Dr. Çeliköz",
+    duration: "~3 dk",
+    lines: [
+      { role: "prof", text: "Merhaba. Bugün kuramı biraz farklı bir açıdan ele almak istiyorum. Sitedeki okuma metninde kuramın bilimsel gözlemlere dayandığını, olaylar arasındaki ilişkileri açıkladığını gördünüz. Peki şunu hiç düşündünüz mü: Kuram sadece 'bilgi' midir?" },
+      { role: "student", text: "Bence evet, öğrendiğimiz bilgi değil mi? Skinner'ın bulguları, Piaget'nin aşamaları…" },
+      { role: "prof", text: "Aslında hayır. Kuram bir 'bakış açısı' da demektir. Aynı olayı farklı kuramlar farklı biçimde açıklar. Bu yüzden kuram; bilgiden çok, bilgiyi örgütleyen bir çerçevedir. Gözlüğe benzetilebilir — hangi gözlüğü takarsanız, dünyayı o renkte görürsünüz." },
+      { role: "student", text: "Yani öğretmen olarak hangi kuramı benimsersem, sınıfı o şekilde mi yorumlarım?" },
+      { role: "prof", text: "Tam olarak. Davranışçı gözlükle sınıfta 'hangi davranış pekiştirilmeli?' diye sorarsınız. Yapılandırmacı gözlükle ise 'öğrenci bu bilgiyi kendi deneyimiyle nasıl bağdaştırabilir?' diye sorarsınız. Kuram, soruyu da şekillendirir." }
+    ]
+  },
+  {
+    title: "Kuramın Doğruluk Kriteri: Sınav mı, Sınıf mı?",
+    speaker: "Tartışma",
+    duration: "~3 dk",
+    lines: [
+      { role: "student", text: "Hocam sitede 'hangisi doğrudur?' sorusuna 'tek bir yanıt yok' denildi. Ama biz sınavda tek bir doğru cevap yazıyoruz. Bu çelişki değil mi?" },
+      { role: "prof", text: "Güzel soru. Sınavdaki doğru, o anki akademik uzlaşıyı yansıtır. Gerçek sınıftaki doğru ise çok daha karmaşık. Aynı sınıfta her öğrenci farklı biçimde öğrenir; bazısı tekrara ihtiyaç duyar, bazısı keşfe. Dolayısıyla 'hangi kuram doğru?' sorusu aslında 'hangi bağlamda?' sorusudur." },
+      { role: "student", text: "Peki bir öğretmen bu karmaşıklığı nasıl yönetir?" },
+      { role: "prof", text: "Kuramı araç olarak kullanarak. Alet çantanızda tek bir alet olursa, her sorunu o aletle çözmeye çalışırsınız. Ama geniş bir alet çantanız varsa, duruma göre doğru aleti seçersiniz. Kuramlar da böyle — ne kadar çok bilirseniz, o kadar esnek olursunuz." }
+    ]
+  },
+  {
+    title: "Tarihsel Bir Yolculuk: Kuramlar Neden Değişti?",
+    speaker: "Prof. Dr. Çeliköz",
+    duration: "~4 dk",
+    lines: [
+      { role: "prof", text: "Sitede davranışçı, bilişsel ve yapılandırmacı kuramların dönemlerini kısaca gördünüz. Şimdi bunun arkasındaki felsefi dönüşümü konuşalım." },
+      { role: "student", text: "Neden bu kadar büyük değişimler yaşandı? Her kuram öncekini yanlışlıyor gibi görünüyor." },
+      { role: "prof", text: "Yanlışlamaktan çok, tamamlıyor aslında. 20. yüzyılın başında bilim adamları gözlemlenemeyen her şeyi 'bilim dışı' sayıyordu. Zihin görülemezdi, ölçülemezdi — bu yüzden davranışa odaklandılar. Sonra bilgisayar metaforu geldi: 'Zihin de bir işlemci gibi çalışabilir, işlemleri inceleyebiliriz.' Böylece bilişsel kuram ortaya çıktı." },
+      { role: "student", text: "Yapılandırmacılık ise ne getirdi?" },
+      { role: "prof", text: "Öğrenen bireyin pasif alıcı değil, aktif anlam üretici olduğunu. Bilgi dışarıdan yüklenmez, içeriden inşa edilir. Bu bakış açısı, sınıfın rolünü de değiştirdi: Öğretmen artık bilginin sahibi değil, öğrenme ortamının mimarıdır. Her paradigma değişimi, hem bilimsel bir devrim hem de toplumsal bir ihtiyacın yansımasıdır." }
+    ]
+  },
+  {
+    title: "İyi Bir Kuram Nasıl Tanınır?",
+    speaker: "Tartışma",
+    duration: "~3 dk",
+    lines: [
+      { role: "student", text: "Hocam peki her fikir kuram olabilir mi? Biri çıkıp 'öğrenciler müzikle daha iyi öğrenir' dese, bu kuram mı olur?" },
+      { role: "prof", text: "Güçlü bir soru. O cümle başlangıçta bir hipotez. Kuram olabilmesi için sınanması gerekir. Peki iyi bir kuramın özellikleri nelerdir? Birincisi açıklayıcılık — geniş bir olgu yelpazesini açıklamalı. İkincisi sınanabilirlik — onu yanlışlayacak bir araştırma tasarlanabilmeli. Üçüncüsü tutarlılık — kendi içinde çelişmemeli." },
+      { role: "student", text: "Yanlışlanabilmek bir zayıflık değil mi?" },
+      { role: "prof", text: "Hayır, tam tersi — bir güç! Karl Popper bunu 'yanlışlanabilirlik' ilkesiyle açıklar. Yanlışlanamayan bir kuram, aslında her şeyi açıklıyor gibi görünür ama hiçbir şey söylemez. Bilimsel kuramın değeri, denenip sıkıştığında bile ayakta durmasından gelir." }
+    ]
+  },
+  {
+    title: "Kuram ile Öğretim Pratiği Arasındaki Mesafe",
+    speaker: "Prof. Dr. Çeliköz",
+    duration: "~4 dk",
+    lines: [
+      { role: "prof", text: "Sitede kuramın öğretmene rehberlik ettiğini gördünüz. Şimdi şunu düşünelim: Neden birçok öğretmen kuramları 'teorik' bulur, yani pratikte işe yaramaz?" },
+      { role: "student", text: "Çünkü sınıfta 35 öğrenci var ve kuram o kaosla nasıl başa çıkacağımızı söylemiyor gibi geliyor." },
+      { role: "prof", text: "Anlıyorum. Ama şöyle düşünün: Bir doktor her hastada tam protokol uygulamaz; deneyimle sezgisini de kullanır. Ancak o sezgi de kuramsal bilgiden beslenir. Sınıftaki 'o an' kararları, arka planda var olan kuramsal çerçevenin filtrelerinden geçer. Farkında olmadan kuram kullanırsınız zaten." },
+      { role: "student", text: "Yani kuram farkında olmadan işliyor mu?" },
+      { role: "prof", text: "Kesinlikle. Soru şu: Farkında mı olmak istersiniz, yoksa değil mi? Bilinçli öğretmen, 'Bu teknik neden işe yarıyor?' sorusunu sorabilir ve cevabını verebilir. Bu da ona esneklik kazandırır: İşe yaramadığında nedenini bilebilir, alternatifi deneyebilir." }
+    ]
+  },
+  {
+    title: "Kuram, Araştırma ve Öğretmen: Üçgen İlişki",
+    speaker: "Prof. Dr. Çeliköz",
+    duration: "~3 dk",
+    lines: [
+      { role: "prof", text: "Sitede kuramın araştırmalara dayandığını ve yeni araştırmalara zemin hazırladığını öğrendiniz. Bu ilişkiyi bir üçgen olarak düşünelim: Kuram, araştırma ve öğretmen." },
+      { role: "student", text: "Öğretmen bu üçgende nerede duruyor?" },
+      { role: "prof", text: "İdeal olan: üçgenin ortasında. Öğretmen hem kuramı uygular hem de sınıftaki gözlemleriyle kurama katkı sağlar. Buna 'uygulamalı araştırma' ya da 'eylem araştırması' denir. Derse giren bir öğretmen, her gün aslında küçük bir araştırmacı gibi gözlem yapıyor. Bu gözlemler sistematik hale gelirse kuram beslenir." },
+      { role: "student", text: "Yani öğretmen de bilim üretiyor olabilir?" },
+      { role: "prof", text: "Kesinlikle. Tarihte pek çok eğitim kuramcısı aynı zamanda öğretmendi. Dewey sınıflarda çalıştı. Montessori klinikten okula geçti. Kuram ve uygulama arasındaki duvarı yıkan hep pratisyenler oldu." }
+    ]
+  },
+  {
+    title: "Aday Öğretmene Not: Kuramı Kendine Mal Etmek",
+    speaker: "Prof. Dr. Çeliköz",
+    duration: "~3 dk",
+    lines: [
+      { role: "prof", text: "Son olarak sizi daha kişisel bir soruyla baş başa bırakmak istiyorum: Hangi kuramı benimseyeceğinize nasıl karar vereceksiniz?" },
+      { role: "student", text: "Sınavda hangisi sorulursa onu mu öğrenirim?" },
+      { role: "prof", text: "Bu yaklaşım sizi sınava hazırlar, ama sınıfa değil. Kuramı kendinize mal etmek için şu soruyu sorun: 'Bu kuram, öğrenme hakkındaki temel inancımla örtüşüyor mu?' Eğer insanın temelde meraklı ve aktif bir varlık olduğuna inanıyorsanız, yapılandırmacılık size daha yakın gelecektir. Eğer alışkanlığın ve pratiğin gücüne inanıyorsanız, davranışçı ilkeler size mantıklı gelecektir." },
+      { role: "student", text: "Peki birini seçmek zorunda mıyız?" },
+      { role: "prof", text: "Hayır. Ama hiç seçmemek de bir seçimdir — ve en tehlikeli olanı. Bilinçsizce seçilmiş kuram, öğretmeni farkında olmadan sınırlar. Okurken, gözlemlerken hangi fikirler size 'işte bu!' dedirtiyorsa, oradan başlayın. Kuram canlıdır — siz de onunla birlikte gelişirsiniz." }
+    ]
+  }
+];
+
+// =============================================
+// PLAYER ENGINE
+// =============================================
+let synth = window.speechSynthesis;
+let currentChapter = -1;
+let currentLine = 0;
+let isPlaying = false;
+let utterance = null;
+let lineProgress = 0;
+let totalLines = 0;
+let startTime = null;
+let elapsedTimer = null;
+let chapterSeconds = [180, 180, 240, 180, 240, 180, 180];
+
+function buildChapterList() {
+  const list = document.getElementById('chapterList');
+  chapters.forEach((ch, i) => {
+    const div = document.createElement('div');
+    div.className = 'chapter';
+    div.id = 'ch-' + i;
+    div.innerHTML = `
+      <div class="chapter-num">${i + 1}</div>
+      <div class="chapter-info">
+        <div class="chapter-title">${ch.title}</div>
+        <div class="chapter-duration">${ch.duration}</div>
+      </div>
+      <div class="chapter-play" onclick="playChapter(${i})">
+        <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      </div>
+    `;
+    div.onclick = () => playChapter(i);
+    list.appendChild(div);
+  });
+}
+
+function playChapter(i) {
+  stopAll();
+  currentChapter = i;
+  currentLine = 0;
+  isPlaying = true;
+
+  document.querySelectorAll('.chapter').forEach(el => el.classList.remove('active'));
+  document.getElementById('ch-' + i).classList.add('active');
+
+  const ch = chapters[i];
+  document.getElementById('npTitle').textContent = ch.title;
+  document.getElementById('npSpeaker').textContent = ch.speaker;
+  document.getElementById('ttsIndicator').classList.remove('idle');
+  document.getElementById('ttsLabel').textContent = 'Seslendiriliyor…';
+
+  updatePlayIcon(true);
+  playLine();
+  startTimer(i);
+}
+
+function playLine() {
+  if (!isPlaying || currentChapter < 0) return;
+  const ch = chapters[currentChapter];
+  if (currentLine >= ch.lines.length) {
+    finishChapter();
+    return;
+  }
+
+  const line = ch.lines[currentLine];
+  showTranscript(currentLine);
+  updateProgress();
+
+  utterance = new SpeechSynthesisUtterance(line.text);
+  utterance.lang = 'tr-TR';
+  utterance.rate = 0.92;
+  utterance.pitch = line.role === 'prof' ? 0.9 : 1.1;
+  utterance.volume = document.getElementById('volSlider').value / 100;
+
+  const voices = synth.getVoices().filter(v => v.lang.startsWith('tr'));
+  if (voices.length > 0) {
+    utterance.voice = line.role === 'prof'
+      ? (voices.find(v => v.name.includes('Male')) || voices[0])
+      : (voices.find(v => v.name.includes('Female')) || voices[voices.length - 1]);
+  }
+
+  utterance.onend = () => {
+    if (!isPlaying) return;
+    currentLine++;
+    setTimeout(playLine, 500);
+  };
+
+  utterance.onerror = () => {
+    currentLine++;
+    setTimeout(playLine, 300);
+  };
+
+  synth.speak(utterance);
+}
+
+function showTranscript(activeLine) {
+  const ch = chapters[currentChapter];
+  let html = '';
+  ch.lines.forEach((line, i) => {
+    const cls = line.role === 'prof' ? 'prof-line' : 'student-line';
+    const label = line.role === 'prof' ? '🎓 Prof. Dr. Çeliköz' : '🎒 Öğrenci';
+    const opacity = i < activeLine ? '0.45' : i === activeLine ? '1' : '0.6';
+    html += `<p style="margin-bottom:10px; opacity:${opacity}">
+      <span class="${cls}">${label}:</span><br>
+      ${line.text}
+    </p>`;
+  });
+  const t = document.getElementById('transcript');
+  t.innerHTML = html;
+  const activeP = t.querySelectorAll('p')[activeLine];
+  if (activeP) activeP.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function updateProgress() {
+  const ch = chapters[currentChapter];
+  const pct = ch.lines.length > 0 ? (currentLine / ch.lines.length) * 100 : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+function togglePlay() {
+  if (currentChapter < 0) { playChapter(0); return; }
+  if (isPlaying) {
+    synth.pause();
+    isPlaying = false;
+    updatePlayIcon(false);
+    clearInterval(elapsedTimer);
+    document.getElementById('ttsLabel').textContent = 'Duraklatıldı';
+    document.getElementById('ttsIndicator').classList.add('idle');
+  } else {
+    synth.resume();
+    isPlaying = true;
+    updatePlayIcon(true);
+    startTimer(currentChapter);
+    document.getElementById('ttsLabel').textContent = 'Seslendiriliyor…';
+    document.getElementById('ttsIndicator').classList.remove('idle');
+  }
+}
+
+function nextChapter() {
+  if (currentChapter < chapters.length - 1) playChapter(currentChapter + 1);
+}
+
+function prevChapter() {
+  if (currentChapter > 0) playChapter(currentChapter - 1);
+}
+
+function stopAll() {
+  synth.cancel();
+  isPlaying = false;
+  clearInterval(elapsedTimer);
+  updatePlayIcon(false);
+}
+
+function finishChapter() {
+  isPlaying = false;
+  clearInterval(elapsedTimer);
+  updatePlayIcon(false);
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('ttsIndicator').classList.add('idle');
+  document.getElementById('ttsLabel').textContent = 'Bölüm tamamlandı';
+  if (currentChapter < chapters.length - 1) {
+    setTimeout(() => nextChapter(), 1500);
+  }
+}
+
+function updatePlayIcon(playing) {
+  document.getElementById('playIcon').setAttribute('d',
+    playing
+      ? 'M6 19h4V5H6v14zm8-14v14h4V5h-4z'
+      : 'M8 5v14l11-7z'
+  );
+}
+
+function setVolume(val) {
+  if (utterance) utterance.volume = val / 100;
+}
+
+function startTimer(i) {
+  clearInterval(elapsedTimer);
+  let elapsed = 0;
+  const total = chapterSeconds[i] || 180;
+  document.getElementById('timeTotal').textContent = formatTime(total);
+  elapsedTimer = setInterval(() => {
+    if (!isPlaying) return;
+    elapsed++;
+    document.getElementById('timeElapsed').textContent = formatTime(elapsed);
+    if (elapsed >= total) clearInterval(elapsedTimer);
+  }, 1000);
+}
+
+function formatTime(s) {
+  return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+}
+
+// Sesler yüklenince başlat
+synth.onvoiceschanged = () => {};
+buildChapterList();
+
+// Progress bar tıklama
+document.getElementById('progressBar').addEventListener('click', function(e) {
+  if (currentChapter < 0) return;
+  const pct = e.offsetX / this.offsetWidth;
+  const ch = chapters[currentChapter];
+  const targetLine = Math.floor(pct * ch.lines.length);
+  stopAll();
+  currentLine = targetLine;
+  isPlaying = true;
+  updatePlayIcon(true);
+  playLine();
+  document.getElementById('ttsIndicator').classList.remove('idle');
+  document.getElementById('ttsLabel').textContent = 'Seslendiriliyor…';
+});
+</script>
+</body>
+</html>

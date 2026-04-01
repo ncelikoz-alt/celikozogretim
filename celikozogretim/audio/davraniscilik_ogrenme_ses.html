@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Davranışçı Öğrenme Kuramı — Öğretmen Adayları Sohbeti</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:#1a0a00;color:#f0ede8;min-height:100vh;padding:1.5rem 1rem}
+  .container{max-width:680px;margin:0 auto}
+  .header{text-align:center;margin-bottom:1.5rem}
+  .topic-badge{display:inline-block;background:#2d1500;border:1px solid #8B4513;border-radius:20px;padding:.3rem 1rem;font-size:.75rem;font-weight:700;color:#FAC775;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.6rem}
+  h1{font-size:1.3rem;font-weight:800;margin-bottom:.2rem}
+  .meta{font-size:.8rem;color:#6a4a2a}
+  .big-play{width:100%;background:#854F0B;border:none;border-radius:14px;padding:1rem;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;color:#fff;cursor:pointer;margin-bottom:1rem;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:.6rem}
+  .big-play:hover{background:#6a3e08}
+  .big-play:disabled{background:#2d1500;color:#6a4a2a;cursor:not-allowed}
+  .mini-controls{display:flex;gap:.6rem;margin-bottom:1rem}
+  .btn{flex:1;border:none;border-radius:10px;padding:.55rem;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .15s}
+  .btn-pause{background:#f4a261;color:#1a0a00}
+  .btn-pause:hover{background:#e0904f}
+  .btn-stop{background:#2d1500;color:#FAC775;border:1px solid #8B4513}
+  .btn-stop:hover{background:#3d2000}
+  .btn:disabled{opacity:.35;cursor:not-allowed}
+  .prog-wrap{margin-bottom:.5rem}
+  .prog-bar{background:#2d1500;border-radius:6px;height:5px;overflow:hidden;margin-bottom:.3rem}
+  .prog-fill{height:100%;background:linear-gradient(90deg,#854F0B,#FAC775);border-radius:6px;width:0%;transition:width .4s}
+  .prog-label{font-size:.72rem;color:#6a4a2a;text-align:right}
+  .settings{background:#2d1500;border-radius:12px;padding:.8rem 1rem;margin-bottom:1rem}
+  .settings-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#6a4a2a;margin-bottom:.7rem}
+  .voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.6rem}
+  .voice-item label{font-size:.7rem;font-weight:700;display:block;margin-bottom:.3rem}
+  .elif-col label{color:#f4a261}
+  .mert-col label{color:#FAC775}
+  select{width:100%;background:#1a0a00;border:1px solid #8B4513;color:#f0ede8;border-radius:7px;padding:.3rem .5rem;font-size:.75rem;font-family:'Nunito',sans-serif;cursor:pointer;outline:none}
+  .speed-row{display:flex;align-items:center;gap:.7rem}
+  .speed-row span{font-size:.75rem;color:#6a4a2a;white-space:nowrap}
+  input[type=range]{flex:1;accent-color:#854F0B;cursor:pointer;height:4px}
+  .speed-val{font-size:.75rem;color:#f0ede8;min-width:34px;text-align:right}
+  .segment{margin-bottom:.5rem}
+  .seg-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:.2rem .7rem;border-radius:20px;display:inline-block;margin-bottom:.5rem}
+  .seg-dialog{background:#854F0B30;color:#FAC775;border:1px solid #854F0B40}
+  .seg-diger{background:#8B451330;color:#f4a261;border:1px solid #8B451340}
+  .seg-summary{background:#f4a26130;color:#f4a261;border:1px solid #f4a26140}
+  .line{border-radius:10px;padding:.75rem 1rem;margin-bottom:.5rem;opacity:.4;border:2px solid transparent;transition:all .25s}
+  .line.elif{background:#2d1500}
+  .line.mert{background:#200e00;margin-left:5%}
+  .line.narrator{background:#180c00;margin:0;border-radius:8px;font-style:italic}
+  .line.active{opacity:1;transform:scale(1.01)}
+  .line.elif.active{border-color:#f4a261}
+  .line.mert.active{border-color:#FAC775}
+  .line.narrator.active{border-color:#EF9F27}
+  .speaker{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.25rem}
+  .elif .speaker{color:#f4a261}
+  .mert .speaker{color:#FAC775}
+  .narrator .speaker{color:#EF9F27}
+  .text{font-size:.88rem;line-height:1.65;color:#9a7a5a}
+  .line.active .text{color:#f0ede8}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="topic-badge">Davranışçı Öğrenme Kuramı</div>
+    <h1>Pavlov'dan Skinner'a — Davranışçılığın Tüm Yüzü</h1>
+    <div class="meta">İki Öğretmen Adayının Sohbeti • ~12 dakika</div>
+  </div>
+
+  <button class="big-play" id="btn-play" onclick="startPlay()">▶ Dinlemeye Başla</button>
+  <div class="mini-controls">
+    <button class="btn btn-pause" id="btn-pause" onclick="togglePause()" disabled>⏸ Duraklat</button>
+    <button class="btn btn-stop" id="btn-stop" onclick="stopPlay()" disabled>⏹ Durdur</button>
+  </div>
+
+  <div class="prog-wrap">
+    <div class="prog-bar"><div class="prog-fill" id="progress"></div></div>
+    <div class="prog-label" id="prog-text">0 / 0</div>
+  </div>
+
+  <div class="settings">
+    <div class="settings-title">Ses Ayarları</div>
+    <div class="voice-grid">
+      <div class="voice-item elif-col"><label>Elif (Kadın)</label><select id="elif-voice"></select></div>
+      <div class="voice-item mert-col"><label>Mert (Erkek)</label><select id="mert-voice"></select></div>
+    </div>
+    <div class="speed-row">
+      <span>Konuşma hızı:</span>
+      <input type="range" id="speed" min="0.6" max="1.5" step="0.05" value="0.95" oninput="document.getElementById('speed-val').textContent=parseFloat(this.value).toFixed(2)+'x'">
+      <span class="speed-val" id="speed-val">0.95x</span>
+    </div>
+  </div>
+
+  <div class="segment">
+    <span class="seg-label seg-dialog">Ana Kuramcılar — Pavlov & Skinner</span>
+    <div id="dialog-lines"></div>
+  </div>
+
+  <div class="segment">
+    <span class="seg-label seg-diger">Diğer Davranışçılar — Thorndike, Watson, Guthrie</span>
+    <div id="diger-lines"></div>
+  </div>
+
+  <div class="segment">
+    <span class="seg-label seg-summary">Sesli Özet</span>
+    <div id="summary-lines"></div>
+  </div>
+</div>
+
+<script>
+const DIALOG = [
+  {s:1,t:"Mert, davranışçılık deyince akla ilk Pavlov geliyor ama bu kadar mı? Daha geniş bir tablo var gibi hissediyorum."},
+  {s:2,t:"Haklısın. Davranışçılık aslında oldukça geniş bir akım. Pavlov, Skinner, Thorndike, Watson, Guthrie — hepsi davranışçı ama her biri farklı bir boyutu açıklıyor."},
+  {s:1,t:"Pavlov'dan başlayalım. Köpek deneyi herkes biliyor ama öğrenme kuramı olarak tam olarak ne söylüyor?"},
+  {s:2,t:"Pavlov klasik koşullanmayı ortaya koydu. Temel fikir şu: doğal bir uyarıcıya verilen doğal tepki, zamanla tarafsız bir uyarıcıyla ilişkilendirilerek o tarafsız uyarıcıya da aynı tepki verilmesini sağlar. Köpek zil sesiyle et aynı anda sunulunca zil sesine de salya salmayı öğrendi."},
+  {s:1,t:"Yani öğrenme uyarıcı ile tepki arasındaki bağın kurulması."},
+  {s:2,t:"Aynen. Pavlov için öğrenme bir refleksin yeni bir uyarıcıya aktarılmasıdır. Zihin süreçleri yok, düşünce yok, his yok — sadece uyarıcı-tepki bağı. Bu davranışçılığın özü."},
+  {s:1,t:"Skinner ise farklı bir yol izledi değil mi?"},
+  {s:2,t:"Skinner edimsel koşullanmayı geliştirdi. Pavlov'da tepki pasif — köpek bekliyor, uyarıcı geliyor. Skinner'da ise organizma aktif — bir davranış yapar, sonucu olumlu olursa tekrar eder, olumsuz olursa yapmaz. Buna pekiştirme deniyor."},
+  {s:1,t:"Pekiştirme tam olarak ne?"},
+  {s:2,t:"Pekiştirme davranışı güçlendiren her şey. Olumlu pekiştirme: davranışın ardından ödül gelir — davranış artar. Olumsuz pekiştirme: davranışın ardından olumsuz bir durum ortadan kalkar — davranış yine artar. Ceza ise davranışı azaltır."},
+  {s:1,t:"Skinner'ın sınıfa katkısı nedir?"},
+  {s:2,t:"Çok büyük. Programlı öğretim Skinner'dan geliyor. Küçük adımlar, anında geri bildirim, başarılı her adımda pekiştirme. Bugünkü dijital öğrenme uygulamalarının, oyunlaştırmanın temelinde Skinner var."},
+  {s:1,t:"Pavlov ile Skinner'ın temel farkı ne?"},
+  {s:2,t:"Pavlov'da uyarıcı önce gelir, tepki onu takip eder — tepki gönülsüz, refleksif. Skinner'da ise önce davranış gelir, sonuç onu şekillendirir — davranış gönüllü, amaçlı. Pavlov'da öğrenme dışarıdan şekilleniyor. Skinner'da birey aktif — ama sonuçlar tarafından kontrol ediliyor."},
+];
+
+const DIGER = [
+  {s:1,t:"Peki Thorndike ne getirdi? Onu Pavlov ve Skinner'dan önce sayıyorlar bazen."},
+  {s:2,t:"Haklısın, Thorndike aslında davranışçılığın öncüsü. 1898'de kedi deneyini yaptı — kedi kafese konuluyor, dışarıda yiyecek var, çıkmak için bir kolu itip kaldırması gerekiyor. Deneme yanılmayla öğreniyor."},
+  {s:1,t:"Buradan hangi yasalar çıktı?"},
+  {s:2,t:"Thorndike üç temel yasa ortaya koydu. Etki yasası: bir davranışın ardından tatmin gelirse o davranış güçlenir, rahatsızlık gelirse zayıflar. Hazırlık yasası: birey öğrenmeye hazır olduğunda öğrenme etkili olur. Alıştırma yasası: tekrar bağı güçlendirir, kullanılmayan bağ zayıflar."},
+  {s:1,t:"Etki yasası Skinner'ın pekiştirme kavramına benziyor."},
+  {s:2,t:"Çok doğru. Skinner Thorndike'tan etkilendi ve pekiştirme kavramını çok daha sistematik hale getirdi. Thorndike tohumu ekti, Skinner büyük ağacı yetiştirdi diyebiliriz."},
+  {s:1,t:"Watson ne yaptı? Davranışçılığın babası mı deniyor ona?"},
+  {s:2,t:"Evet, John Watson 1913'te davranışçılık manifestosunu yayımladı. Dedi ki: psikoloji yalnızca gözlemlenebilir davranışı incelemelidir. Zihin, bilinç, duygu — bunlar bilimin konusu değil. Sadece uyarıcı ve tepki."},
+  {s:1,t:"Çok katı bir tutum bu."},
+  {s:2,t:"Çok katı ama o dönem için devrimci. Watson'ın küçük Albert deneyi var — bir bebeğe beyaz fare gösteriyorlar, tam o anda yüksek gürültü çıkarıyorlar. Bebek gürültüden korkuyor. Zamanla beyaz fareyi görünce de korkuyor. Korku koşullanabiliyor."},
+  {s:1,t:"Bu etik açıdan sorunlu değil mi?"},
+  {s:2,t:"Bugün kesinlikle etik dışı kabul edilir. Watson o deneyi bir daha yapamadı. Ama deneyin teorik katkısı büyük — koşullanmanın duygulara da uygulanabileceğini gösterdi."},
+  {s:1,t:"Guthrie'yi de anlat biraz. Çok bilinmiyor."},
+  {s:2,t:"Edwin Guthrie bitişiklik kuramını geliştirdi. Çok yalın bir fikir: bir uyarıcı ve bir tepki aynı anda gerçekleşirse, o uyarıcı bir daha göründüğünde aynı tepki verilir. Tek bir eşleşme öğrenme için yeterli — Pavlov gibi defalarca tekrara gerek yok."},
+  {s:1,t:"Peki bu gerçekçi mi? Tek seferle öğreniliyor mu?"},
+  {s:2,t:"Guthrie'ye göre evet — ilk eşleşme tam öğrenmeyi sağlıyor. Ama biz bu öğrenmenin üstüne yeni öğrenmeler bindiriyoruz, bu yüzden eski davranış zayıflıyor gibi görünüyor. Alışkanlıkları kırmak da bu yüzden zor — üstüne yeni eşleşme koymak gerekiyor."},
+  {s:1,t:"Davranışçılığın genel eleştirisi nedir? Neden tek başına yeterli görülmüyor?"},
+  {s:2,t:"En büyük eleştiri zihnin göz ardı edilmesi. İnsan sadece uyarıcı-tepki makinesi değil. Düşünüyor, anlam çıkarıyor, hayal kuruyor. Bunları davranışçılık açıklayamıyor. Bu yüzden 1950'lerden sonra bilişsel devrim başladı — zihnin içine bakmaya başladılar."},
+  {s:1,t:"Ama davranışçılığın katkısı yadsınamaz."},
+  {s:2,t:"Kesinlikle. Pekiştirme, geri bildirim, tekrar, koşullanma — bunlar hâlâ sınıfta kullanılan güçlü araçlar. Davranışçılık öğrenmeyi bilimsel olarak incelemenin ilk adımıydı. Onun üzerine bilişselcilik, yapılandırmacılık inşa edildi."},
+];
+
+const SUMMARY = [
+  {s:0,t:"Davranışçı öğrenme kuramını altı temel başlıkta özetleyelim."},
+  {s:1,t:"Birinci madde: Pavlov — klasik koşullanma. Doğal uyarıcıya verilen tepki, tarafsız uyarıcıyla eşleşince o uyarıcıya da aktarılır. Öğrenme uyarıcı-tepki bağının kurulmasıdır."},
+  {s:2,t:"İkinci madde: Skinner — edimsel koşullanma. Davranışın ardından gelen pekiştirme davranışı güçlendirir, ceza azaltır. Programlı öğretim ve anında geri bildirim Skinner'dan gelir."},
+  {s:1,t:"Üçüncü madde: Thorndike — etki, hazırlık ve alıştırma yasaları. Tatmin veren davranış güçlenir. Birey hazır olduğunda öğrenme verimlidir. Tekrar bağı pekiştirir. Skinner'ın öncüsüdür."},
+  {s:2,t:"Dördüncü madde: Watson — davranışçılığın manifestosu. Psikoloji yalnızca gözlemlenebilir davranışı inceler. Zihin, bilinç kapsam dışıdır. Küçük Albert deneyi duyguların da koşullanabileceğini gösterdi."},
+  {s:1,t:"Beşinci madde: Guthrie — bitişiklik kuramı. Uyarıcı ve tepki aynı anda gerçekleşirse öğrenme gerçekleşir. Tek eşleşme yeterlidir. Alışkanlıkları kırmak için üstüne yeni eşleşme koymak gerekir."},
+  {s:2,t:"Altıncı madde: Davranışçılığın sınırlılığı ve katkısı. Zihin süreçlerini göz ardı etmesi en büyük eleştirisi. Ama pekiştirme, geri bildirim, koşullanma kavramları hâlâ geçerli ve güçlü araçlar."},
+  {s:0,t:"Davranışçı öğrenme kuramının özü şudur: Öğrenme gözlemlenebilir davranış değişikliğidir. Uyarıcı, tepki ve pekiştirme bu değişikliği şekillendirir. Davranışçılık bilimsel psikolojinin ve öğrenme kuramlarının ilk büyük adımıdır."},
+];
+
+const synth=window.speechSynthesis;
+let allLines=[],currentIdx=-1,paused=false,utterance=null;
+
+function buildLines(){
+  const dl=document.getElementById('dialog-lines');
+  const dg=document.getElementById('diger-lines');
+  const sl=document.getElementById('summary-lines');
+  DIALOG.forEach((l,i)=>{
+    const cls=l.s===1?'elif':'mert';
+    const spk=l.s===1?'Elif':'Mert';
+    const div=document.createElement('div');
+    div.className='line '+cls;
+    div.innerHTML=`<div class="speaker">${spk}</div><div class="text">${l.t}</div>`;
+    dl.appendChild(div);allLines.push({...l});
+  });
+  DIGER.forEach((l,i)=>{
+    const cls=l.s===1?'elif':'mert';
+    const spk=l.s===1?'Elif':'Mert';
+    const div=document.createElement('div');
+    div.className='line '+cls;
+    div.innerHTML=`<div class="speaker">${spk}</div><div class="text">${l.t}</div>`;
+    dg.appendChild(div);allLines.push({...l});
+  });
+  SUMMARY.forEach((l,i)=>{
+    const cls=l.s===0?'narrator':(l.s===1?'elif':'mert');
+    const spk=l.s===0?'Anlatıcı':(l.s===1?'Elif':'Mert');
+    const div=document.createElement('div');
+    div.className='line '+cls;
+    div.innerHTML=`<div class="speaker">${spk}</div><div class="text">${l.t}</div>`;
+    sl.appendChild(div);allLines.push({...l});
+  });
+  document.querySelectorAll('.line').forEach((el,i)=>el.id='al'+i);
+  document.getElementById('prog-text').textContent='0 / '+allLines.length;
+}
+buildLines();
+
+function loadVoices(){
+  const voices=synth.getVoices();
+  const tr=voices.filter(v=>v.lang&&v.lang.startsWith('tr'));
+  const pool=tr.length?tr:voices;
+  ['elif-voice','mert-voice'].forEach(id=>{
+    const sel=document.getElementById(id);sel.innerHTML='';
+    pool.forEach((v)=>{
+      const o=document.createElement('option');
+      o.value=voices.indexOf(v);o.textContent=v.name;sel.appendChild(o);
+    });
+  });
+  if(tr.length>=2){
+    document.getElementById('elif-voice').value=voices.indexOf(tr[0]);
+    document.getElementById('mert-voice').value=voices.indexOf(tr[1]);
+  }
+}
+synth.addEventListener('voiceschanged',loadVoices);loadVoices();
+
+function getVoice(s){
+  const id=s===1?'elif-voice':'mert-voice';
+  const idx=parseInt(document.getElementById(id).value);
+  return synth.getVoices()[idx]||null;
+}
+
+function setActive(i){
+  document.querySelectorAll('.line').forEach(l=>l.classList.remove('active'));
+  if(i>=0){const el=document.getElementById('al'+i);if(el){el.classList.add('active');el.scrollIntoView({behavior:'smooth',block:'center'});}}
+  const pct=i>=0?Math.round((i+1)/allLines.length*100):0;
+  document.getElementById('progress').style.width=pct+'%';
+  document.getElementById('prog-text').textContent=(i>=0?i+1:0)+' / '+allLines.length;
+}
+
+function startPlay(){
+  synth.cancel();currentIdx=0;paused=false;
+  document.getElementById('btn-play').disabled=true;
+  document.getElementById('btn-pause').disabled=false;
+  document.getElementById('btn-stop').disabled=false;
+  playLine(0);
+}
+
+function playLine(i){
+  if(i>=allLines.length){stopPlay();return;}
+  currentIdx=i;setActive(i);
+  const l=allLines[i];
+  utterance=new SpeechSynthesisUtterance(l.t);
+  utterance.voice=getVoice(l.s===0?2:l.s);
+  utterance.rate=parseFloat(document.getElementById('speed').value);
+  utterance.lang='tr-TR';
+  utterance.onend=()=>{if(!paused)setTimeout(()=>playLine(i+1),l.s===0?400:200);};
+  synth.speak(utterance);
+}
+
+function togglePause(){
+  if(paused){paused=false;synth.resume();document.getElementById('btn-pause').textContent='⏸ Duraklat';}
+  else{paused=true;synth.pause();document.getElementById('btn-pause').textContent='▶ Devam Et';}
+}
+
+function stopPlay(){
+  synth.cancel();paused=false;currentIdx=-1;setActive(-1);
+  document.getElementById('btn-play').disabled=false;
+  document.getElementById('btn-pause').disabled=true;
+  document.getElementById('btn-stop').disabled=true;
+  document.getElementById('btn-pause').textContent='⏸ Duraklat';
+}
+</script>
+</body>
+</html>

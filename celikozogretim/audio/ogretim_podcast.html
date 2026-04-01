@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Öğretim Kavramı — Podcast</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:#071428;color:#f0ede8;min-height:100vh;padding:1.5rem 1rem}
+  .container{max-width:680px;margin:0 auto}
+  .cover{width:100%;aspect-ratio:1;background:linear-gradient(135deg,#071428 0%,#0d2a50 50%,#071428 100%);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:1.2rem;position:relative;overflow:hidden}
+  .cover-badge{position:absolute;top:1rem;right:1rem;background:#185FA5;border:1.5px solid #85B7EB;border-radius:20px;padding:.2rem .8rem;font-size:.7rem;font-weight:700;color:#B5D4F4}
+  .cover-icon{font-size:64px;margin-bottom:.5rem}
+  .cover-title{font-size:1.6rem;font-weight:800;color:#fff;text-align:center;line-height:1.2;margin-bottom:.3rem}
+  .cover-sub{font-size:.85rem;color:#85B7EB;text-align:center}
+  .cover-ep{position:absolute;bottom:1rem;left:1rem;background:rgba(0,0,0,.4);border-radius:8px;padding:.3rem .8rem;font-size:.75rem;color:#85B7EB}
+  .header{text-align:center;margin-bottom:1rem}
+  h1{font-size:1.1rem;font-weight:800;margin-bottom:.15rem}
+  .meta{font-size:.78rem;color:#3a5a7a}
+  .big-play{width:100%;background:#185FA5;border:none;border-radius:14px;padding:1rem;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;color:#fff;cursor:pointer;margin-bottom:.7rem;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:.6rem}
+  .big-play:hover{background:#0d4a8a}
+  .big-play:disabled{background:#0d1f3c;color:#3a5a7a;cursor:not-allowed}
+  .mini-controls{display:flex;gap:.6rem;margin-bottom:.7rem}
+  .btn{flex:1;border:none;border-radius:10px;padding:.55rem;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .15s}
+  .btn-pause{background:#f4a261;color:#071428}
+  .btn-pause:hover{background:#e0904f}
+  .btn-stop{background:#0d1f3c;color:#85B7EB;border:1px solid #185FA5}
+  .btn-stop:hover{background:#1a2f4c}
+  .btn:disabled{opacity:.35;cursor:not-allowed}
+  .prog-wrap{margin-bottom:.5rem}
+  .prog-bar{background:#0d1f3c;border-radius:6px;height:5px;overflow:hidden;margin-bottom:.3rem}
+  .prog-fill{height:100%;background:linear-gradient(90deg,#185FA5,#56cfe1);border-radius:6px;width:0%;transition:width .4s}
+  .prog-label{font-size:.72rem;color:#3a5a7a;text-align:right}
+  .settings{background:#0d1f3c;border-radius:12px;padding:.8rem 1rem;margin-bottom:.8rem}
+  .settings-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#3a5a7a;margin-bottom:.7rem}
+  .voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.6rem}
+  .voice-item label{font-size:.7rem;font-weight:700;display:block;margin-bottom:.3rem}
+  .elif-col label{color:#f4a261}
+  .mert-col label{color:#56cfe1}
+  select{width:100%;background:#071428;border:1px solid #185FA5;color:#f0ede8;border-radius:7px;padding:.3rem .5rem;font-size:.75rem;font-family:'Nunito',sans-serif;cursor:pointer;outline:none}
+  .speed-row{display:flex;align-items:center;gap:.7rem}
+  .speed-row span{font-size:.75rem;color:#3a5a7a;white-space:nowrap}
+  input[type=range]{flex:1;accent-color:#185FA5;cursor:pointer;height:4px}
+  .speed-val{font-size:.75rem;color:#f0ede8;min-width:34px;text-align:right}
+  .segment{margin-bottom:.5rem}
+  .seg-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:.2rem .7rem;border-radius:20px;display:inline-block;margin-bottom:.4rem}
+  .seg-1{background:#185FA530;color:#85B7EB;border:1px solid #185FA540}
+  .seg-2{background:#f4a26130;color:#f4a261;border:1px solid #f4a26140}
+  .seg-3{background:#1D9E7530;color:#9FE1CB;border:1px solid #1D9E7540}
+  .seg-4{background:#53347030;color:#CECBF6;border:1px solid #53347040}
+  .seg-5{background:#D4537E30;color:#F4C0D1;border:1px solid #D4537E40}
+  .line{border-radius:10px;padding:.75rem 1rem;margin-bottom:.45rem;opacity:.4;border:2px solid transparent;transition:all .25s}
+  .line.elif{background:#0d1f3c}
+  .line.mert{background:#091628;margin-left:5%}
+  .line.active{opacity:1;transform:scale(1.01)}
+  .line.elif.active{border-color:#f4a261}
+  .line.mert.active{border-color:#56cfe1}
+  .speaker{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.25rem}
+  .elif .speaker{color:#f4a261}
+  .mert .speaker{color:#56cfe1}
+  .text{font-size:.88rem;line-height:1.65;color:#4a6a8a}
+  .line.active .text{color:#f0ede8}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="cover">
+    <div class="cover-badge">PODCAST</div>
+    <div class="cover-icon">🎓</div>
+    <div class="cover-title">Öğretim Kavramı</div>
+    <div class="cover-sub">Görünmez Boyutlar ve Derin Anlam<br>Elif & Mert ile Sohbet</div>
+    <div class="cover-ep">~2 dakika</div>
+  </div>
+
+  <div class="header">
+    <h1>Öğretim — Görünmez Boyutlar</h1>
+    <div class="meta">Elif & Mert · Öğretim İlke ve Yöntemleri Serisi</div>
+  </div>
+
+  <button class="big-play" id="btn-play" onclick="startPlay()">▶ Podcast'i Başlat</button>
+  <div class="mini-controls">
+    <button class="btn btn-pause" id="btn-pause" onclick="togglePause()" disabled>⏸ Duraklat</button>
+    <button class="btn btn-stop" id="btn-stop" onclick="stopPlay()" disabled>⏹ Durdur</button>
+  </div>
+
+  <div class="prog-wrap">
+    <div class="prog-bar"><div class="prog-fill" id="progress"></div></div>
+    <div class="prog-label" id="prog-text">0 / 0</div>
+  </div>
+
+  <div class="settings">
+    <div class="settings-title">Ses Ayarları</div>
+    <div class="voice-grid">
+      <div class="voice-item elif-col"><label>Elif (Kadın)</label><select id="elif-voice"></select></div>
+      <div class="voice-item mert-col"><label>Mert (Erkek)</label><select id="mert-voice"></select></div>
+    </div>
+    <div class="speed-row">
+      <span>Konuşma hızı:</span>
+      <input type="range" id="speed" min="0.6" max="1.5" step="0.05" value="0.95" oninput="document.getElementById('speed-val').textContent=parseFloat(this.value).toFixed(2)+'x'">
+      <span class="speed-val" id="speed-val">0.95x</span>
+    </div>
+  </div>
+
+  <div class="segment"><span class="seg-label seg-1">Öğretim Anlatmak mıdır?</span><div id="s1-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-2">Bilinçli Karar mı, Sezgi mi?</span><div id="s2-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-3">Öğretim Öğrenmeyi Garanti Eder mi?</span><div id="s3-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-4">Görünmez Boyutlar</span><div id="s4-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-5">Öğretim Bir Sanattır</span><div id="s5-lines"></div></div>
+
+</div>
+
+<script>
+const S1=[
+  {s:2,t:"Elif, öğretmenin derste sürekli konuşması öğretim sayılır mı?"},
+  {s:1,t:"Hayır, sayılmaz. Öğretmenin konuşması tek başına öğretim değildir. Öğretim; öğrencinin öğrenmesi için ortamın bilinçli olarak düzenlenmesidir. Öğretmen konuşurken öğrenci öğrenmiyorsa orada öğretim gerçekleşmemiştir."},
+  {s:2,t:"Peki o zaman öğretim ne zaman gerçekleşmiş olur?"},
+  {s:1,t:"Öğretim; öğrencinin zihninde bir şeylerin değişmeye başladığı anda gerçekleşir. Bu değişikliği tetikleyen her bilinçli eylem — soru sormak, sessiz kalmak, örnek vermek, yeri değiştirmek — öğretimin ta kendisidir."},
+];
+const S2=[
+  {s:2,t:"Bilinçli karar ile sezgisel karar arasındaki fark nedir öğretim açısından?"},
+  {s:1,t:"Deneyimli bir öğretmen bazen sezgiyle hareket eder ve doğru kararlar verir. Ancak sezgi, aslında içselleştirilmiş bilinçli kararların otomatikleşmiş halidir. Gerçek öğretim ise her kararın arkasında bir neden olan, planlı ve sistematik eylemdir."},
+  {s:2,t:"Yani iki öğretmen aynı sınıfta aynı konuyu verse farklı sonuçlar çıkabilir mi?"},
+  {s:1,t:"Kesinlikle. Aynı konu, aynı ders saati, aynı öğrenciler — ama biri soruyu doğru anda soruyor, diğeri cevabı kendisi veriyor. Biri sessizliğin öğrenciyi düşündüreceğini biliyor, diğeri sessizlikten rahatsız olup dolduruyor. İşte bu fark öğretim kalitesidir."},
+];
+const S3=[
+  {s:2,t:"Öğretim yapıldığında öğrenme mutlaka gerçekleşir mi?"},
+  {s:1,t:"Hayır, garanti değildir. Öğretim öğrenme için gerekli koşulları hazırlar ama öğrenme bireyin kendi zihinsel süreçlerinde gerçekleşir. Öğretim ne kadar iyi tasarlanırsa olsun, öğrencinin sürece aktif katılımı olmadan kalıcı öğrenme oluşmaz."},
+  {s:2,t:"Bu durumda öğretimi başarılı kılan nedir?"},
+  {s:1,t:"Öğretimi başarılı kılan; öğrencinin düşünmesini, sorgulamasını ve anlamlandırmasını sağlamaktır. Bunun için öğretmen bazen susar, bazen yanlış örnek verir, bazen öğrenciyi çıkmaz sokağa sokar — ta ki öğrenci kendi yolunu bulsun diye."},
+];
+const S4=[
+  {s:2,t:"Öğretimin görünmez boyutları derken neyi kastediyorsunuz?"},
+  {s:1,t:"Kimsenin dikkat etmediği ama öğrenmeyi derinden etkileyen boyutları. Öğretmenin soru sorduktan sonra kaç saniye beklediği. Sesi yükseltip alçaltması. Kime göz teması kurduğu. Sınıfın neresinde durduğu. Bunların hiçbiri kâğıda yazmaz ama öğretim kalitesini doğrudan belirler."},
+  {s:2,t:"Peki bu boyutlar öğretilebilir mi, yoksa doğuştan mı gelir?"},
+  {s:1,t:"Tamamen öğrenilebilir. Hatta bu yüzden öğretmenlik bir meslek eğitimi gerektirir. Bir öğretmenin soru sorduktan sonra üç saniye beklemesi, öğrencilerin düşünme süresini iki katına çıkardığını araştırmalar gösteriyor. Bu küçük karar, öğretimi dönüştürür."},
+];
+const S5=[
+  {s:2,t:"O zaman öğretim bir bilim midir, yoksa sanat mı?"},
+  {s:1,t:"İkisi birden. Bilimdir; çünkü hangi yöntemin, hangi koşulda, hangi öğrenci için işe yaradığını araştırma verileri gösteriyor. Sanattır; çünkü aynı veriyi farklı öğretmenler farklı biçimlerde hayata geçirir. Bilimi olmayan öğretim sezgiye, sanatı olmayan öğretim kalıba dönüşür."},
+  {s:2,t:"Kısacası iyi öğretim, doğru kararı doğru anda vermektir."},
+  {s:1,t:"Evet. Ve o doğru kararın arkasında her zaman bir amaç, bir plan ve öğrenciye derin bir saygı vardır."},
+];
+
+const SECTIONS=[
+  {data:S1,el:'s1-lines'},
+  {data:S2,el:'s2-lines'},
+  {data:S3,el:'s3-lines'},
+  {data:S4,el:'s4-lines'},
+  {data:S5,el:'s5-lines'},
+];
+
+const synth=window.speechSynthesis;
+let allLines=[],currentIdx=-1,paused=false,utterance=null;
+
+function buildLines(){
+  SECTIONS.forEach(sec=>{
+    const cont=document.getElementById(sec.el);
+    sec.data.forEach(l=>{
+      const cls=l.s===1?'elif':'mert';
+      const spk=l.s===1?'Elif':'Mert';
+      const div=document.createElement('div');
+      div.className='line '+cls;
+      div.innerHTML=`<div class="speaker">${spk}</div><div class="text">${l.t}</div>`;
+      cont.appendChild(div);
+      allLines.push({...l});
+    });
+  });
+  document.querySelectorAll('.line').forEach((el,i)=>el.id='al'+i);
+  document.getElementById('prog-text').textContent='0 / '+allLines.length;
+}
+buildLines();
+
+function loadVoices(){
+  const voices=synth.getVoices();
+  const tr=voices.filter(v=>v.lang&&v.lang.startsWith('tr'));
+  const pool=tr.length?tr:voices;
+  ['elif-voice','mert-voice'].forEach(id=>{
+    const sel=document.getElementById(id);sel.innerHTML='';
+    pool.forEach(v=>{const o=document.createElement('option');o.value=voices.indexOf(v);o.textContent=v.name;sel.appendChild(o);});
+  });
+  if(tr.length>=2){document.getElementById('elif-voice').value=voices.indexOf(tr[0]);document.getElementById('mert-voice').value=voices.indexOf(tr[1]);}
+}
+synth.addEventListener('voiceschanged',loadVoices);loadVoices();
+
+function getVoice(s){const id=s===1?'elif-voice':'mert-voice';return synth.getVoices()[parseInt(document.getElementById(id).value)]||null;}
+
+function setActive(i){
+  document.querySelectorAll('.line').forEach(l=>l.classList.remove('active'));
+  if(i>=0){const el=document.getElementById('al'+i);if(el){el.classList.add('active');el.scrollIntoView({behavior:'smooth',block:'center'});}}
+  document.getElementById('progress').style.width=(i>=0?Math.round((i+1)/allLines.length*100):0)+'%';
+  document.getElementById('prog-text').textContent=(i>=0?i+1:0)+' / '+allLines.length;
+}
+
+function startPlay(){
+  synth.cancel();currentIdx=0;paused=false;
+  document.getElementById('btn-play').disabled=true;
+  document.getElementById('btn-pause').disabled=false;
+  document.getElementById('btn-stop').disabled=false;
+  playLine(0);
+}
+
+function playLine(i){
+  if(i>=allLines.length){stopPlay();return;}
+  currentIdx=i;setActive(i);
+  const l=allLines[i];
+  utterance=new SpeechSynthesisUtterance(l.t);
+  utterance.voice=getVoice(l.s);
+  utterance.rate=parseFloat(document.getElementById('speed').value);
+  utterance.lang='tr-TR';
+  utterance.onend=()=>{if(!paused)setTimeout(()=>playLine(i+1),120);};
+  synth.speak(utterance);
+}
+
+function togglePause(){
+  if(paused){paused=false;synth.resume();document.getElementById('btn-pause').textContent='⏸ Duraklat';}
+  else{paused=true;synth.pause();document.getElementById('btn-pause').textContent='▶ Devam Et';}
+}
+
+function stopPlay(){
+  synth.cancel();paused=false;currentIdx=-1;setActive(-1);
+  document.getElementById('btn-play').disabled=false;
+  document.getElementById('btn-pause').disabled=true;
+  document.getElementById('btn-stop').disabled=true;
+  document.getElementById('btn-pause').textContent='⏸ Duraklat';
+}
+</script>
+</body>
+</html>
