@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Model Nedir? — Podcast</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',sans-serif;background:#0f1a0a;color:#f0ede8;min-height:100vh;padding:1.5rem 1rem}
+  .container{max-width:680px;margin:0 auto}
+  .cover{width:100%;aspect-ratio:1;background:linear-gradient(135deg,#1a3a0a 0%,#2d6b14 50%,#1a3a0a 100%);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:1.2rem;position:relative;overflow:hidden}
+  .cover-icon{font-size:64px;margin-bottom:.5rem}
+  .cover-title{font-size:1.6rem;font-weight:800;color:#fff;text-align:center;line-height:1.2;margin-bottom:.3rem}
+  .cover-sub{font-size:.85rem;color:#9FE1CB;text-align:center}
+  .cover-badge{position:absolute;top:1rem;right:1rem;background:#3B6D11;border:1.5px solid #97C459;border-radius:20px;padding:.2rem .8rem;font-size:.7rem;font-weight:700;color:#C0DD97}
+  .cover-ep{position:absolute;bottom:1rem;left:1rem;background:rgba(0,0,0,.4);border-radius:8px;padding:.3rem .8rem;font-size:.75rem;color:#9FE1CB}
+  .header{text-align:center;margin-bottom:1rem}
+  h1{font-size:1.1rem;font-weight:800;margin-bottom:.15rem}
+  .meta{font-size:.78rem;color:#4a6a3a}
+  .big-play{width:100%;background:#3B6D11;border:none;border-radius:14px;padding:1rem;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;color:#fff;cursor:pointer;margin-bottom:.7rem;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:.6rem}
+  .big-play:hover{background:#2d5509}
+  .big-play:disabled{background:#1a2e0d;color:#4a6a3a;cursor:not-allowed}
+  .mini-controls{display:flex;gap:.6rem;margin-bottom:.7rem}
+  .btn{flex:1;border:none;border-radius:10px;padding:.55rem;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .15s}
+  .btn-pause{background:#f4a261;color:#0f1a0a}
+  .btn-pause:hover{background:#e0904f}
+  .btn-stop{background:#1a2e0d;color:#97C459;border:1px solid #3b6d11}
+  .btn-stop:hover{background:#243d14}
+  .btn:disabled{opacity:.35;cursor:not-allowed}
+  .prog-wrap{margin-bottom:.5rem}
+  .prog-bar{background:#1a2e0d;border-radius:6px;height:5px;overflow:hidden;margin-bottom:.3rem}
+  .prog-fill{height:100%;background:linear-gradient(90deg,#3B6D11,#97C459);border-radius:6px;width:0%;transition:width .4s}
+  .prog-label{font-size:.72rem;color:#4a6a3a;text-align:right}
+  .settings{background:#1a2e0d;border-radius:12px;padding:.8rem 1rem;margin-bottom:.8rem}
+  .settings-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#4a6a3a;margin-bottom:.7rem}
+  .voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.6rem}
+  .voice-item label{font-size:.7rem;font-weight:700;display:block;margin-bottom:.3rem}
+  .elif-col label{color:#f4a261}
+  .mert-col label{color:#97C459}
+  select{width:100%;background:#0f1a0a;border:1px solid #3b6d11;color:#f0ede8;border-radius:7px;padding:.3rem .5rem;font-size:.75rem;font-family:'Nunito',sans-serif;cursor:pointer;outline:none}
+  .speed-row{display:flex;align-items:center;gap:.7rem}
+  .speed-row span{font-size:.75rem;color:#4a6a3a;white-space:nowrap}
+  input[type=range]{flex:1;accent-color:#3B6D11;cursor:pointer;height:4px}
+  .speed-val{font-size:.75rem;color:#f0ede8;min-width:34px;text-align:right}
+  .segment{margin-bottom:.5rem}
+  .seg-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:.2rem .7rem;border-radius:20px;display:inline-block;margin-bottom:.4rem}
+  .seg-giris{background:#3B6D1130;color:#97C459;border:1px solid #3B6D1140}
+  .seg-tanim{background:#185FA530;color:#85B7EB;border:1px solid #185FA540}
+  .seg-ogrenme{background:#f4a26130;color:#f4a261;border:1px solid #f4a26140}
+  .seg-ogretim{background:#53347030;color:#CECBF6;border:1px solid #53347040}
+  .seg-iliskilendir{background:#854F0B30;color:#FAC775;border:1px solid #854F0B40}
+  .seg-kapanis{background:#63380630;color:#FAC775;border:1px solid #63380640}
+  .line{border-radius:10px;padding:.75rem 1rem;margin-bottom:.45rem;opacity:.4;border:2px solid transparent;transition:all .25s}
+  .line.elif{background:#1a2e0d}
+  .line.mert{background:#0f2008;margin-left:5%}
+  .line.narrator{background:#0a1806;margin:0;border-radius:8px;font-style:italic}
+  .line.active{opacity:1;transform:scale(1.01)}
+  .line.elif.active{border-color:#f4a261}
+  .line.mert.active{border-color:#97C459}
+  .line.narrator.active{border-color:#C0DD97}
+  .speaker{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.25rem}
+  .elif .speaker{color:#f4a261}
+  .mert .speaker{color:#97C459}
+  .narrator .speaker{color:#C0DD97}
+  .text{font-size:.88rem;line-height:1.65;color:#6a8a5a}
+  .line.active .text{color:#f0ede8}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="cover">
+    <div class="cover-badge">PODCAST</div>
+    <div class="cover-icon">🧩</div>
+    <div class="cover-title">Model Nedir?</div>
+    <div class="cover-sub">Öğretmen Adayları için Temel Kavramlar<br>Elif & Mert ile Sohbet</div>
+    <div class="cover-ep">Bölüm 7 • ~7 dakika</div>
+  </div>
+
+  <div class="header">
+    <h1>Model Nedir? — Temel Kavramlar</h1>
+    <div class="meta">Elif & Mert • Eğitim Bilimine Giriş Serisi</div>
+  </div>
+
+  <button class="big-play" id="btn-play" onclick="startPlay()">▶ Podcast'i Başlat</button>
+  <div class="mini-controls">
+    <button class="btn btn-pause" id="btn-pause" onclick="togglePause()" disabled>⏸ Duraklat</button>
+    <button class="btn btn-stop" id="btn-stop" onclick="stopPlay()" disabled>⏹ Durdur</button>
+  </div>
+
+  <div class="prog-wrap">
+    <div class="prog-bar"><div class="prog-fill" id="progress"></div></div>
+    <div class="prog-label" id="prog-text">0 / 0</div>
+  </div>
+
+  <div class="settings">
+    <div class="settings-title">Ses Ayarları</div>
+    <div class="voice-grid">
+      <div class="voice-item elif-col"><label>Elif (Kadın)</label><select id="elif-voice"></select></div>
+      <div class="voice-item mert-col"><label>Mert (Erkek)</label><select id="mert-voice"></select></div>
+    </div>
+    <div class="speed-row">
+      <span>Konuşma hızı:</span>
+      <input type="range" id="speed" min="0.6" max="1.5" step="0.05" value="0.92" oninput="document.getElementById('speed-val').textContent=parseFloat(this.value).toFixed(2)+'x'">
+      <span class="speed-val" id="speed-val">0.92x</span>
+    </div>
+  </div>
+
+  <div class="segment"><span class="seg-label seg-giris">Giriş</span><div id="giris-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-tanim">Modelin Tanımı</span><div id="tanim-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-ogrenme">Öğrenme Modeli</span><div id="ogrenme-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-ogretim">Öğretim Modeli</span><div id="ogretim-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-iliskilendir">İki Boyut Birbirini Tamamlar</span><div id="iliskilendir-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-kapanis">Kapanış</span><div id="kapanis-lines"></div></div>
+
+</div>
+
+<script>
+const GIRIS=[
+  {s:2,t:"Elif Hanım, model kavramını nasıl tanımlarsınız?"},
+  {s:1,t:"Model, öğretim sürecinin nasıl gerçekleştirileceğini gösteren sistemli ve bütüncül öğretim tasarımıdır."},
+  {s:2,t:"Yani model, bir olguyu anlamak ve uygulamaya aktarmak için geliştirilmiş bir yapı mı?"},
+  {s:1,t:"Evet. Model, bir sistemin basitleştirilmiş temsilidir. Eğitimde hem öğrenme modeli hem de öğretim modeli olarak iki boyutta ele alınır."},
+];
+const TANIM=[
+  {s:2,t:"Modelin temel özellikleri nelerdir?"},
+  {s:1,t:"Model, öğrenmenin zihinde nasıl gerçekleştiğini açıklar ve öğretim sürecini sistemli hale getirir. Kuramsal temellere dayanır."},
+  {s:2,t:"5E Modeli bunun bir örneği mi?"},
+  {s:1,t:"Evet. 5E Modeli yapılandırmacı yaklaşıma dayalı bir yol haritasıdır. Dikkat Çekme, Keşfetme, Açıklama, Derinleştirme ve Değerlendirme aşamalarından oluşur."},
+];
+const OGRENME=[
+  {s:2,t:"Öğrenme modeli ne demek?"},
+  {s:1,t:"Öğrenme modeli, öğrenmenin zihinde nasıl gerçekleştiğini açıklamaya çalışan kuramsal bir yapıdır. 'Öğrenci bilgiyi nasıl işler, depolar ve kullanır?' sorusuna yanıt arar."},
+  {s:2,t:"Bilgi İşleme Modeli buna bir örnek mi?"},
+  {s:1,t:"Evet. Bilgi İşleme Modeli, duyusal kayıttan kısa süreli belleğe, oradan uzun süreli belleğe uzanan zihinsel süreci görünür kılar."},
+  {s:2,t:"Kolb'un modeli de öğrenme modeli mi?"},
+  {s:1,t:"Evet. Kolb'un Yaşantısal Öğrenme Modeli, öğrenmenin somut deneyim, gözlem, kavramsallaştırma ve deneme aşamalarıyla döngüsel biçimde ilerlediğini gösterir."},
+];
+const OGRETIM=[
+  {s:2,t:"Öğretim modeli öğrenme modelinden nasıl farklıdır?"},
+  {s:1,t:"Öğretim modeli, öğretmenin sınıfı nasıl düzenleyeceğini, dersi hangi aşamalarla yürüteceğini gösteren uygulamaya dönük bir yapıdır."},
+  {s:2,t:"5E Modeli öğretim modeli olarak nasıl işler?"},
+  {s:1,t:"5E Modeli; dikkat çekme, keşfetme, açıklama, derinleştirme ve değerlendirme aşamalarıyla öğretmene sistematik bir yol haritası sunar."},
+  {s:2,t:"Doğrudan Öğretim Modeli de var mı?"},
+  {s:1,t:"Evet. Doğrudan Öğretim Modeli ise açıklama, gösterme, rehberli uygulama ve bağımsız uygulama aşamalarıyla yapılandırılmıştır."},
+];
+const ILISKILENDIR=[
+  {s:2,t:"İki boyut nasıl birbirini tamamlıyor?"},
+  {s:1,t:"Öğrenme modeli teorik temeli sağlar, öğretim modeli onu sınıf ortamına taşır. Kolb'un yaşantısal öğrenme modelini benimseyen bir öğretmen, doğal olarak deneyim ve keşfe dayalı öğretim modellerini tercih edecektir."},
+  {s:2,t:"Model ile yaklaşım arasındaki ilişki nedir?"},
+  {s:1,t:"Model, yaklaşımın altında yer alır. Yaklaşım genel bakış açısını belirler, model ise bu bakış açısını sistematik bir yapıya dönüştürür."},
+];
+const KAPANIS=[
+  {s:2,t:"Kısaca özetlersek model nedir?"},
+  {s:1,t:"Model, öğretim sürecinin nasıl gerçekleştirileceğini gösteren sistemli bir tasarımdır. Hem öğrenme hem öğretim boyutu vardır. Öğrenme modeli teorik temeli sağlar, öğretim modeli onu sınıf ortamına taşır."},
+  {s:2,t:"Yani model, kuramla uygulama arasındaki köprü."},
+  {s:1,t:"Evet, güzel bir özetleme oldu."},
+];
+
+const SECTIONS=[
+  {data:GIRIS,el:'giris-lines',meta:true},
+  {data:TANIM,el:'tanim-lines'},
+  {data:OGRENME,el:'ogrenme-lines'},
+  {data:OGRETIM,el:'ogretim-lines'},
+  {data:ILISKILENDIR,el:'iliskilendir-lines'},
+  {data:KAPANIS,el:'kapanis-lines',meta:true},
+];
+
+const synth=window.speechSynthesis;
+let allLines=[],currentIdx=-1,paused=false,utterance=null;
+
+function buildLines(){
+  SECTIONS.forEach(sec=>{
+    const cont=document.getElementById(sec.el);
+    sec.data.forEach((l)=>{
+      const cls=l.s===0?'narrator':(l.s===1?'elif':'mert');
+      const spk=l.s===0?'Anlatıcı':(l.s===1?'Elif':'Mert');
+      const div=document.createElement('div');
+      div.className='line '+cls;
+      div.innerHTML=`<div class="speaker">${spk}</div><div class="text">${l.t}</div>`;
+      cont.appendChild(div);
+      allLines.push({...l});
+    });
+  });
+  document.querySelectorAll('.line').forEach((el,i)=>el.id='al'+i);
+  document.getElementById('prog-text').textContent='0 / '+allLines.length;
+}
+buildLines();
+
+function loadVoices(){
+  const voices=synth.getVoices();
+  const tr=voices.filter(v=>v.lang&&v.lang.startsWith('tr'));
+  const pool=tr.length?tr:voices;
+  ['elif-voice','mert-voice'].forEach(id=>{
+    const sel=document.getElementById(id);sel.innerHTML='';
+    pool.forEach(v=>{const o=document.createElement('option');o.value=voices.indexOf(v);o.textContent=v.name;sel.appendChild(o);});
+  });
+  if(tr.length>=2){document.getElementById('elif-voice').value=voices.indexOf(tr[0]);document.getElementById('mert-voice').value=voices.indexOf(tr[1]);}
+}
+synth.addEventListener('voiceschanged',loadVoices);loadVoices();
+
+function getVoice(s){const id=s===1?'elif-voice':'mert-voice';return synth.getVoices()[parseInt(document.getElementById(id).value)]||null;}
+
+function setActive(i){
+  document.querySelectorAll('.line').forEach(l=>l.classList.remove('active'));
+  if(i>=0){const el=document.getElementById('al'+i);if(el){el.classList.add('active');el.scrollIntoView({behavior:'smooth',block:'center'});}}
+  document.getElementById('progress').style.width=(i>=0?Math.round((i+1)/allLines.length*100):0)+'%';
+  document.getElementById('prog-text').textContent=(i>=0?i+1:0)+' / '+allLines.length;
+}
+
+function startPlay(){
+  synth.cancel();currentIdx=0;paused=false;
+  document.getElementById('btn-play').disabled=true;
+  document.getElementById('btn-pause').disabled=false;
+  document.getElementById('btn-stop').disabled=false;
+  playLine(0);
+}
+
+function playLine(i){
+  if(i>=allLines.length){stopPlay();return;}
+  currentIdx=i;setActive(i);
+  const l=allLines[i];
+  utterance=new SpeechSynthesisUtterance(l.t);
+  utterance.voice=getVoice(l.s===0?2:l.s);
+  utterance.rate=parseFloat(document.getElementById('speed').value);
+  utterance.lang='tr-TR';
+  utterance.onend=()=>{if(!paused)setTimeout(()=>playLine(i+1),l.s===0?300:120);};
+  synth.speak(utterance);
+}
+
+function togglePause(){
+  if(paused){paused=false;synth.resume();document.getElementById('btn-pause').textContent='⏸ Duraklat';}
+  else{paused=true;synth.pause();document.getElementById('btn-pause').textContent='▶ Devam Et';}
+}
+
+function stopPlay(){
+  synth.cancel();paused=false;currentIdx=-1;setActive(-1);
+  document.getElementById('btn-play').disabled=false;
+  document.getElementById('btn-pause').disabled=true;
+  document.getElementById('btn-stop').disabled=true;
+  document.getElementById('btn-pause').textContent='⏸ Duraklat';
+}
+</script>
+</body>
+</html>
