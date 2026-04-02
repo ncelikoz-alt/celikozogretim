@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Model Nedir? — Podcast</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Tahoma,sans-serif;background:#F0F4FF;color:#2d2d2d;min-height:100vh;padding:1.5rem}
+.container{max-width:700px;margin:0 auto}
+.header{background:linear-gradient(135deg,#1B3A6B,#0D1F3C);border-radius:16px;padding:2rem;color:#fff;margin-bottom:1.5rem;text-align:center}
+.header h1{font-size:1.6rem;font-weight:700;margin-bottom:.4rem}
+.header .meta{font-size:.85rem;opacity:.85}
+.big-play{display:block;width:100%;padding:1rem;background:#1B3A6B;color:#fff;border:none;border-radius:12px;font-size:1.1rem;font-weight:700;cursor:pointer;margin-bottom:.8rem;transition:background .2s}
+.big-play:hover{background:#0D1F3C}
+.mini-controls{display:flex;gap:.6rem;margin-bottom:1rem}
+.btn{flex:1;padding:.6rem;border:none;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;transition:opacity .2s}
+.btn:disabled{opacity:.4;cursor:default}
+.btn-pause{background:#2D6A4F;color:#fff}
+.btn-stop{background:#555;color:#fff}
+.prog-wrap{margin-bottom:1.2rem}
+.prog-bar{background:#d0d8e8;border-radius:8px;height:8px;margin-bottom:.3rem;overflow:hidden}
+.prog-fill{height:100%;background:#1B3A6B;width:0%;transition:width .3s;border-radius:8px}
+.prog-label{font-size:.78rem;color:#888;text-align:right}
+.settings{background:#fff;border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.2rem;border:1px solid #d0d8e8}
+.settings-title{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#1B3A6B;margin-bottom:.8rem}
+.voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:.6rem}
+.voice-item label{display:block;font-size:.78rem;color:#666;margin-bottom:.3rem;font-weight:600}
+.voice-item select{width:100%;padding:.4rem .6rem;border-radius:6px;border:1px solid #ddd;font-size:.82rem;background:#fafafa}
+.tolga-col label{color:#1B3A6B}
+.mert-col label{color:#E9C46A;text-shadow:0 0 1px #999}
+.voice-hint{font-size:.75rem;color:#999;margin-bottom:.8rem;font-style:italic}
+.speed-row{display:flex;align-items:center;gap:.8rem;font-size:.82rem;color:#555}
+.speed-row input{flex:1}
+.speed-val{font-weight:700;color:#1B3A6B;min-width:36px}
+.segment{background:#fff;border-radius:12px;padding:1rem 1.2rem;margin-bottom:.8rem;border:1px solid #d0d8e8}
+.seg-label{display:inline-block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:3px 10px;border-radius:20px;margin-bottom:.8rem}
+.seg-giris{background:#D6E0F5;color:#1B3A6B}
+.seg-farkinda{background:#D8EDE4;color:#1A4D35}
+.seg-celiski{background:#D6E0F5;color:#1B3A6B}
+.seg-karisik{background:#D8EDE4;color:#1A4D35}
+.seg-ogrenci{background:#D6E0F5;color:#1B3A6B}
+.seg-iskelet{background:#D8EDE4;color:#1A4D35}
+.seg-kapanis{background:#FDF3D0;color:#7A5500}
+.line{padding:.5rem .6rem;border-radius:8px;margin-bottom:.4rem;font-size:.9rem;line-height:1.6;transition:background .2s}
+.line.active{background:#D6E0F5;font-weight:600}
+.line .speaker{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.tolga .speaker{color:#1B3A6B}
+.mert .speaker{color:#B8860B}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1>🎧 Model Nedir?</h1>
+    <div class="meta">Tolga & Mert • Temel Kavramlar Serisi</div>
+  </div>
+
+  <button class="big-play" id="btn-play" onclick="startPlay()">▶ Dinlemeye Başla</button>
+  <div class="mini-controls">
+    <button class="btn btn-pause" id="btn-pause" onclick="togglePause()" disabled>⏸ Duraklat</button>
+    <button class="btn btn-stop" id="btn-stop" onclick="stopPlay()" disabled>⏹ Durdur</button>
+  </div>
+
+  <div class="prog-wrap">
+    <div class="prog-bar"><div class="prog-fill" id="progress"></div></div>
+    <div class="prog-label" id="prog-text">0 / 0</div>
+  </div>
+
+  <div class="settings">
+    <div class="settings-title">Ses Ayarları</div>
+    <div class="voice-grid">
+      <div class="voice-item tolga-col">
+        <label>Tolga — Erkek sesi 1</label>
+        <select id="tolga-voice"></select>
+      </div>
+      <div class="voice-item mert-col">
+        <label>Mert — Erkek sesi 2</label>
+        <select id="mert-voice"></select>
+      </div>
+    </div>
+    <p class="voice-hint">İki farklı erkek sesi seçin — sesler birbirinden ayrışsın.</p>
+    <div class="speed-row">
+      <span>Konuşma hızı:</span>
+      <input type="range" id="speed" min="0.6" max="1.5" step="0.05" value="0.92"
+        oninput="document.getElementById('speed-val').textContent=parseFloat(this.value).toFixed(2)+'x'">
+      <span class="speed-val" id="speed-val">0.92x</span>
+    </div>
+  </div>
+
+  <div class="segment"><span class="seg-label seg-giris">Giriş</span><div id="giris-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-farkinda">Farkında Olmak</span><div id="farkinda-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-celiski">Yaklaşım–Model Uyumu</span><div id="celiski-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-karisik">Modeller Karıştırılabilir mi?</span><div id="karisik-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-ogrenci">Öğrenci Ne Hisseder?</span><div id="ogrenci-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-iskelet">İskelet Olmadan Bina Olmaz</span><div id="iskelet-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-kapanis">Kapanış</span><div id="kapanis-lines"></div></div>
+
+</div>
+
+<script>
+// s:1 = Tolga, s:2 = Mert
+const GIRIS=[
+  {s:2,t:"Tolga, şunu soracağım — hoca bugün 5E modeliyle işleyeceğiz dediğinde sen ne düşünüyorsun?"},
+  {s:1,t:"Açıkçası çoğu zaman ne anlama geldiğini tam bilmeden dinliyorum. Bir şeyler yapıyoruz, ders bitiyor."},
+  {s:2,t:"İşte tam da bu sorun. Model orada uygulanıyor ama öğrenci ne yaşadığını, öğretmen ne yaptığını tam görmüyor."},
+];
+const FARKINDA=[
+  {s:1,t:"Peki öğretmen modeli bilmeden de uygulayabilir mi?"},
+  {s:2,t:"Uygulayabilir. Ama farkında olmadan uygulamak ile bilinçli uygulamak çok farklı şeyler. Farkında olmayan öğretmen bir adım atladığında ne kaybettiğini bilmiyor. Farkında olan öğretmen neden o adımı attığını, nereye varacağını biliyor."},
+  {s:1,t:"Yani model bir kontrol listesi gibi mi?"},
+  {s:2,t:"Daha derin bir şey. Kontrol listesi şunu yaptın mı diye sorar. Model ise neden bu sırayla, bu rollerle, bu amaçla sorusunu yanıtlar. Plan ile kontrol listesi arasındaki fark gibi."},
+];
+const CELISKI=[
+  {s:1,t:"Peki hoca yapılandırmacı yaklaşımı benimsemiş ama doğrudan öğretim modelini kullanıyorsa ne olur?"},
+  {s:2,t:"Yaklaşım ile model çelişirse öğretim tutarsız hale gelir. Yapılandırmacı yaklaşım öğrenciyi merkeze koyar, keşfi ön plana çıkarır. Doğrudan öğretim modeli ise açıklama, gösterme, rehberli uygulama sırasıyla ilerler — öğretmen merkezlidir. İkisi birlikte yürümez."},
+  {s:1,t:"Demek ki modeli yaklaşıma uygun seçmek zorundasın."},
+  {s:2,t:"Zorundasın. Yaklaşım gözlüğünü seçtin, model ise o gözlükle çizilen plan. Planın gözlüğe uymaması mimari bir hata."},
+];
+const KARISIK=[
+  {s:1,t:"Peki modeller karıştırılabilir mi? Mesela 5E'nin bazı aşamalarını alıp başka bir modelle birleştirmek?"},
+  {s:2,t:"Bu tartışmalı. Modeller bütünlüklü tasarımlar — her aşama bir öncekinin üzerine kuruluyor. Parça alınca bütünlük bozulabilir. Ama deneyimli öğretmen hangi parçayı neden aldığını bilerek uyarlayabilir. Deneyimsiz öğretmen uyarlarsa süreci kaybedebilir."},
+];
+const OGRENCI=[
+  {s:1,t:"Öğrenci açısından düşünürsek — modeli hissediyor muyuz?"},
+  {s:2,t:"Adını bilmeden hissediyorsunuz. İyi uygulanan bir modelde öğrenci merak ederek giriyor, keşfederek ilerliyor, anlamlandırarak çıkıyor. Kötü uygulamada ise ne yaptığını bilmeden oturuyor, ders bitiyor."},
+  {s:1,t:"Ben ikincisini çok yaşadım."},
+  {s:2,t:"Çoğu öğrenci yaşıyor. Çünkü öğretmenler genellikle modeli atlayıp direkt tekniğe geçiyor — bugün drama yapacağız, bugün tartışma yapacağız. Neden? Çünkü teknik somut, görünür, uygulaması hızlı. Model ise arka planda çalışan bir iskelet — görünmez ama olmadan bina ayakta durmaz."},
+];
+const ISKELET=[
+  {s:1,t:"Yani model o iskelet."},
+  {s:2,t:"Aynen. Ve iskelet olmadan ne kadar güzel kaplama yapsan bina çöker."},
+  {s:1,t:"O zaman öğretmen adayı olarak bize düşen ne?"},
+  {s:2,t:"Önce hangi yaklaşımı benimsediğini bil. Sonra o yaklaşımla uyumlu modeli seç. Sonra o modelin aşamalarını, rollerini, mantığını öğren. Teknikler zaten ondan sonra gelir — model belirliyse teknik seçmek çok daha kolay."},
+];
+const KAPANIS=[
+  {s:1,t:"Planı olan mimar gibi."},
+  {s:2,t:"Tam olarak. Planı olan mimar malzemeyi rastgele seçmez. Modeli olan öğretmen de tekniğini rastgele seçmez."},
+];
+
+const SECTIONS=[
+  {id:'giris-lines',data:GIRIS},
+  {id:'farkinda-lines',data:FARKINDA},
+  {id:'celiski-lines',data:CELISKI},
+  {id:'karisik-lines',data:KARISIK},
+  {id:'ogrenci-lines',data:OGRENCI},
+  {id:'iskelet-lines',data:ISKELET},
+  {id:'kapanis-lines',data:KAPANIS},
+];
+
+const ALL=[];
+SECTIONS.forEach(sec=>{
+  sec.data.forEach((line,i)=>{
+    ALL.push({...line,secId:sec.id,localIdx:i});
+  });
+});
+
+let voices=[];
+let currentIdx=0,paused=false,stopped=false;
+
+function populateVoices(){
+  voices=window.speechSynthesis.getVoices();
+  const trVoices=voices.filter(v=>v.lang.startsWith('tr'));
+  const pool=trVoices.length?trVoices:voices;
+
+  const tolgaSel=document.getElementById('tolga-voice');
+  const mertSel=document.getElementById('mert-voice');
+  tolgaSel.innerHTML='';
+  mertSel.innerHTML='';
+
+  pool.forEach((v,i)=>{
+    tolgaSel.innerHTML+=`<option value="${i}">${v.name}</option>`;
+    mertSel.innerHTML+=`<option value="${i}">${v.name}</option>`;
+  });
+
+  tolgaSel.value=0;
+  mertSel.value=pool.length>1?1:0;
+}
+
+window.speechSynthesis.onvoiceschanged=populateVoices;
+populateVoices();
+
+function renderLines(){
+  SECTIONS.forEach(sec=>{
+    const el=document.getElementById(sec.id);
+    el.innerHTML='';
+    sec.data.forEach((line,i)=>{
+      const cls=line.s===1?'tolga':'mert';
+      const lbl=line.s===1?'Tolga':'Mert';
+      const div=document.createElement('div');
+      div.className=`line ${cls}`;
+      div.id=`line-${sec.id}-${i}`;
+      div.innerHTML=`<div class="speaker">${lbl}</div>${line.t}`;
+      el.appendChild(div);
+    });
+  });
+}
+renderLines();
+
+function getVoice(s){
+  const trVoices=voices.filter(v=>v.lang.startsWith('tr'));
+  const pool=trVoices.length?trVoices:voices;
+  if(s===1){
+    const idx=parseInt(document.getElementById('tolga-voice').value)||0;
+    return pool[idx]||voices[0];
+  } else {
+    const idx=parseInt(document.getElementById('mert-voice').value)||0;
+    return pool[idx]||voices[0];
+  }
+}
+
+function highlightLine(idx){
+  document.querySelectorAll('.line').forEach(el=>el.classList.remove('active'));
+  const line=ALL[idx];
+  const el=document.getElementById(`line-${line.secId}-${line.localIdx}`);
+  if(el){el.classList.add('active');el.scrollIntoView({behavior:'smooth',block:'nearest'});}
+  document.getElementById('prog-text').textContent=`${idx+1} / ${ALL.length}`;
+  document.getElementById('progress').style.width=((idx+1)/ALL.length*100)+'%';
+}
+
+function speakLine(idx){
+  if(idx>=ALL.length){stopPlay();return;}
+  currentIdx=idx;
+  highlightLine(idx);
+  const line=ALL[idx];
+  const utter=new SpeechSynthesisUtterance(line.t);
+  utter.lang='tr-TR';
+  utter.voice=getVoice(line.s);
+  utter.rate=parseFloat(document.getElementById('speed').value);
+  utter.pitch=line.s===1?1.05:0.9;
+  utter.onend=()=>{
+    if(!stopped&&!paused)setTimeout(()=>speakLine(idx+1),120);
+  };
+  window.speechSynthesis.speak(utter);
+}
+
+function startPlay(){
+  window.speechSynthesis.cancel();
+  stopped=false;paused=false;currentIdx=0;
+  document.getElementById('btn-play').disabled=true;
+  document.getElementById('btn-pause').disabled=false;
+  document.getElementById('btn-stop').disabled=false;
+  speakLine(0);
+}
+
+function togglePause(){
+  if(paused){
+    paused=false;
+    document.getElementById('btn-pause').textContent='⏸ Duraklat';
+    window.speechSynthesis.resume();
+    if(!window.speechSynthesis.speaking)speakLine(currentIdx);
+  } else {
+    paused=true;
+    document.getElementById('btn-pause').textContent='▶ Devam Et';
+    window.speechSynthesis.pause();
+  }
+}
+
+function stopPlay(){
+  stopped=true;paused=false;
+  window.speechSynthesis.cancel();
+  document.getElementById('btn-play').disabled=false;
+  document.getElementById('btn-pause').disabled=true;
+  document.getElementById('btn-pause').textContent='⏸ Duraklat';
+  document.getElementById('btn-stop').disabled=true;
+  document.querySelectorAll('.line').forEach(el=>el.classList.remove('active'));
+  document.getElementById('progress').style.width='0%';
+  document.getElementById('prog-text').textContent='0 / 0';
+}
+</script>
+</body>
+</html>
