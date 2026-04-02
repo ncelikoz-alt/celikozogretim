@@ -1,13 +1,6 @@
 [build]
   publish = "."
 
-# Netlify subdomain'den celikozogretim.com'a yönlendir
-[[redirects]]
-  from = "https://quiet-semolina-9897f9.netlify.app/*"
-  to = "https://celikozogretim.com/:splat"
-  status = 301
-  force = true
-
 [[headers]]
   for = "/*"
   [headers.values]
