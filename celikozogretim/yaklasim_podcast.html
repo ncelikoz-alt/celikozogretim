@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yaklaşım Nedir? — Podcast</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Tahoma,sans-serif;background:#FFF8F0;color:#2d2d2d;min-height:100vh;padding:1.5rem}
+.container{max-width:700px;margin:0 auto}
+.header{background:linear-gradient(135deg,#C1440E,#8B2E08);border-radius:16px;padding:2rem;color:#fff;margin-bottom:1.5rem;text-align:center}
+.header h1{font-size:1.6rem;font-weight:700;margin-bottom:.4rem}
+.header .meta{font-size:.85rem;opacity:.85}
+.big-play{display:block;width:100%;padding:1rem;background:#C1440E;color:#fff;border:none;border-radius:12px;font-size:1.1rem;font-weight:700;cursor:pointer;margin-bottom:.8rem;transition:background .2s}
+.big-play:hover{background:#8B2E08}
+.mini-controls{display:flex;gap:.6rem;margin-bottom:1rem}
+.btn{flex:1;padding:.6rem;border:none;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;transition:opacity .2s}
+.btn:disabled{opacity:.4;cursor:default}
+.btn-pause{background:#2D6A4F;color:#fff}
+.btn-stop{background:#555;color:#fff}
+.prog-wrap{margin-bottom:1.2rem}
+.prog-bar{background:#e0d4c8;border-radius:8px;height:8px;margin-bottom:.3rem;overflow:hidden}
+.prog-fill{height:100%;background:#C1440E;width:0%;transition:width .3s;border-radius:8px}
+.prog-label{font-size:.78rem;color:#888;text-align:right}
+.settings{background:#fff;border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.2rem;border:1px solid #e8ddd4}
+.settings-title{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#C1440E;margin-bottom:.8rem}
+.voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:.6rem}
+.voice-item label{display:block;font-size:.78rem;color:#666;margin-bottom:.3rem;font-weight:600}
+.voice-item select{width:100%;padding:.4rem .6rem;border-radius:6px;border:1px solid #ddd;font-size:.82rem;background:#fafafa}
+.tolga-col label{color:#2D6A4F}
+.mert-col label{color:#C1440E}
+.voice-hint{font-size:.75rem;color:#999;margin-bottom:.8rem;font-style:italic}
+.speed-row{display:flex;align-items:center;gap:.8rem;font-size:.82rem;color:#555}
+.speed-row input{flex:1}
+.speed-val{font-weight:700;color:#C1440E;min-width:36px}
+.segment{background:#fff;border-radius:12px;padding:1rem 1.2rem;margin-bottom:.8rem;border:1px solid #e8ddd4}
+.seg-label{display:inline-block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:3px 10px;border-radius:20px;margin-bottom:.8rem}
+.seg-giris{background:#FDE8D8;color:#8B2E08}
+.seg-tanim{background:#D8EDE4;color:#1A4D35}
+.seg-kuram{background:#FDE8D8;color:#8B2E08}
+.seg-ogrenme{background:#D8EDE4;color:#1A4D35}
+.seg-ogretim{background:#FDE8D8;color:#8B2E08}
+.seg-isler{background:#D8EDE4;color:#1A4D35}
+.seg-kapanis{background:#F5ECD7;color:#7A5500}
+.line{padding:.5rem .6rem;border-radius:8px;margin-bottom:.4rem;font-size:.9rem;line-height:1.6;transition:background .2s}
+.line.active{background:#FDE8D8;font-weight:600}
+.line .speaker{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.tolga .speaker{color:#2D6A4F}
+.mert .speaker{color:#C1440E}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1>🎧 Yaklaşım Nedir?</h1>
+    <div class="meta">Tolga & Mert • Temel Kavramlar Serisi</div>
+  </div>
+
+  <button class="big-play" id="btn-play" onclick="startPlay()">▶ Dinlemeye Başla</button>
+  <div class="mini-controls">
+    <button class="btn btn-pause" id="btn-pause" onclick="togglePause()" disabled>⏸ Duraklat</button>
+    <button class="btn btn-stop" id="btn-stop" onclick="stopPlay()" disabled>⏹ Durdur</button>
+  </div>
+
+  <div class="prog-wrap">
+    <div class="prog-bar"><div class="prog-fill" id="progress"></div></div>
+    <div class="prog-label" id="prog-text">0 / 0</div>
+  </div>
+
+  <div class="settings">
+    <div class="settings-title">Ses Ayarları</div>
+    <div class="voice-grid">
+      <div class="voice-item tolga-col">
+        <label>Tolga — Erkek sesi</label>
+        <select id="tolga-voice"></select>
+      </div>
+      <div class="voice-item mert-col">
+        <label>Mert — Erkek sesi</label>
+        <select id="mert-voice"></select>
+      </div>
+    </div>
+    <p class="voice-hint">Tolga için listeden kadın sesini, Mert için erkek sesini seçin.</p>
+    <div class="speed-row">
+      <span>Konuşma hızı:</span>
+      <input type="range" id="speed" min="0.6" max="1.5" step="0.05" value="0.92"
+        oninput="document.getElementById('speed-val').textContent=parseFloat(this.value).toFixed(2)+'x'">
+      <span class="speed-val" id="speed-val">0.92x</span>
+    </div>
+  </div>
+
+  <div class="segment"><span class="seg-label seg-giris">Giriş</span><div id="giris-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-tanim">Yaklaşım Nedir?</span><div id="tanim-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-kuram">Kuram ve Stil ile Farkı</span><div id="kuram-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-ogrenme">Öğrenme Yaklaşımı</span><div id="ogrenme-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-ogretim">Öğretim Yaklaşımı</span><div id="ogretim-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-isler">Bilinçli Yaklaşım</span><div id="isler-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-kapanis">Kapanış</span><div id="kapanis-lines"></div></div>
+
+</div>
+
+<script>
+// s:1 = Tolga (kadın), s:2 = Mert (erkek)
+const GIRIS=[
+  {s:2,t:"Tolga, sana şunu soracağım — sen hiç fark ettin mi bilmiyorum ama üniversitede hocaların bazıları sınıfa girince hava değişiyor. Neden acaba?"},
+  {s:1,t:"Değişiyor tabii. Kimi hoca anlatır, biz yazarız. Kimi hoca soru sorar, biz düşünürüz. Bazıları sınıfı düz sıraya oturtur, bazıları çember yapar."},
+  {s:2,t:"İşte tam orası. Bu sadece kişilik farkı mı, yoksa arkasında başka bir şey mi var?"},
+  {s:1,t:"Ne demek istiyorsun?"},
+  {s:2,t:"Şunu diyorum — o fark, o sınıf havası, aslında o hocanın öğretime bakış açısından geliyor. Buna yaklaşım diyoruz."},
+];
+const TANIM=[
+  {s:1,t:"Yaklaşım derken neyi kastediyoruz tam olarak?"},
+  {s:2,t:"Yaklaşım; bir öğretmenin öğretime ilişkin felsefesi, anlayışı, stili, tarzı ve sınıftaki rollerin nasıl dağıtıldığının hepsinin bir kombinasyonu. Tek bir derse göre değişmez — genel bir tutum bu."},
+  {s:1,t:"Yani öğretmenin her derse taşıdığı genel bir bakış açısı."},
+  {s:2,t:"Tam olarak. Ve bu bakış açısı o öğretmenin sınıftaki her kararını etkiliyor — sorudan değerlendirmeye, oturma düzeninden geri bildirime kadar."},
+];
+const KURAM=[
+  {s:1,t:"Peki yaklaşım ile kuram aynı şey mi?"},
+  {s:2,t:"Hayır. Kuram bilim insanlarının araştırmalarla ürettiği açıklama sistemi. Yaklaşım ise öğretmenin o kuramı benimseyip sınıfa nasıl yansıttığı. Kuram bilimin çıktısı, yaklaşım öğretmenin tercihi."},
+  {s:1,t:"Öğretim stiliyle de farklı mı?"},
+  {s:2,t:"Evet. Öğretim stili yaklaşımın içinde kalır — daha dar bir kavram. Yaklaşım ise stili de kapsayan daha geniş bir çerçeve. Felsefe, anlayış ve rollerle birlikte düşünmek gerekiyor."},
+];
+const OGRENME=[
+  {s:1,t:"Öğrenme yaklaşımı diye ayrı bir kavram var mı?"},
+  {s:2,t:"Var ve öğretim yaklaşımından farklı. Öğrenme yaklaşımı öğrencinin öğrenmeyi ne düzeyde gerçekleştirdiğiyle ilgili. Üç türü var: yüzeysel öğrenme, derin öğrenme ve stratejik öğrenme."},
+  {s:1,t:"Yüzeysel öğrenme ezber midir?"},
+  {s:2,t:"Büyük ölçüde öyle. Öğrenci bilgiyi anlayıp özümsemeden yalnızca hatırlamak için öğrenir. Derin öğrenmede ise bilgiyi anlamlandırır, ilişkilendirir, sorgular."},
+  {s:1,t:"Stratejik öğrenme ne?"},
+  {s:2,t:"Öğrenci hedef odaklıdır — not almak, sınavı geçmek için en verimli yolu seçer. Ne kadar derine gireceğini duruma göre ayarlar."},
+];
+const OGRETIM=[
+  {s:1,t:"Öğretim yaklaşımı ise daha çok öğretmenin tutumu mu?"},
+  {s:2,t:"Evet. Öğretim yaklaşımı; öğrenmenin nasıl gerçekleştiğine dair anlayışı, öğretimin nasıl yapılacağını ve rollerin nasıl tahsis edileceğini belirler."},
+  {s:1,t:"Rollerin taksimi derken?"},
+  {s:2,t:"Kim aktif, kim pasif — bu temel soru. Öğretmen merkezli yaklaşımda bilgiyi aktaran öğretmendir. Öğrenci merkezli yaklaşımda öğrenci keşfeder, sorgular, üretir; öğretmen kolaylaştırıcıya dönüşür."},
+  {s:1,t:"Davranışçı, bilişsel, yapılandırmacı bunlar nereye giriyor?"},
+  {s:2,t:"Bunlar öğrenmenin nasıl gerçekleştiğine dair kuramsal çerçeveler. Bu çerçeveleri benimseyen öğretmen ona uygun bir öğretim yaklaşımı geliştirir. Yani önce kuramsal duruş, sonra yaklaşım, sonra uygulamaya dönük kararlar."},
+];
+const ISLER=[
+  {s:1,t:"Peki bir öğretmen yaklaşımını farkında olmadan da sergileyebilir mi?"},
+  {s:2,t:"Evet, bu çok kritik bir nokta. Her öğretmen bir yaklaşım sergiliyor — istese de istemese de. Ben anlatırım, siz dinlersiniz diyen öğretmen de bir yaklaşım seçmiş oluyor, sadece bilinçsizce."},
+  {s:1,t:"Yani asıl fark bilinçli olmak mı?"},
+  {s:2,t:"Tam olarak. Yaklaşımının farkında olan öğretmen neyi neden yaptığını açıklayabilir. Hangi gözlüğü taktığını bilen öğretmen, sınıftaki her kararını o anlayışla tutarlı biçimde verir."},
+];
+const KAPANIS=[
+  {s:1,t:"Anlıyorum. Yaklaşım öğretmenin imzası gibi bir şey o zaman."},
+  {s:2,t:"Güzel söyledin. Ve o imza sınıftaki her şeye yansıyor — oturma düzeninden soruya, değerlendirmeden geri bildirime. Yaklaşımını bilen öğretmen aslında kendini bilen öğretmendir."},
+  {s:1,t:"Hangi gözlüğü taktığını bilen öğretmen."},
+  {s:2,t:"Aynen öyle."},
+];
+
+const SECTIONS=[
+  {id:'giris-lines',data:GIRIS},
+  {id:'tanim-lines',data:TANIM},
+  {id:'kuram-lines',data:KURAM},
+  {id:'ogrenme-lines',data:OGRENME},
+  {id:'ogretim-lines',data:OGRETIM},
+  {id:'isler-lines',data:ISLER},
+  {id:'kapanis-lines',data:KAPANIS},
+];
+
+const ALL=[];
+SECTIONS.forEach(sec=>{
+  sec.data.forEach((line,i)=>{
+    ALL.push({...line,secId:sec.id,localIdx:i});
+  });
+});
+
+let voices=[];
+let currentIdx=0,paused=false,stopped=false;
+
+function populateVoices(){
+  voices=window.speechSynthesis.getVoices();
+  const trVoices=voices.filter(v=>v.lang.startsWith('tr'));
+  const pool=trVoices.length?trVoices:voices;
+
+  const tolgaSel=document.getElementById('tolga-voice');
+  const mertSel=document.getElementById('mert-voice');
+  tolgaSel.innerHTML='';
+  mertSel.innerHTML='';
+
+  pool.forEach((v,i)=>{
+    tolgaSel.innerHTML+=`<option value="${i}">${v.name}</option>`;
+    mertSel.innerHTML+=`<option value="${i}">${v.name}</option>`;
+  });
+
+  const femaleKw=/female|kadin|woman|girl|zeynep|tolga|yelda|filiz|emel/i;
+  const maleKw=/male|erkek|man|boy|mehmet|mert|onur|ahmet|kemal/i;
+
+  let femIdx=pool.findIndex(v=>femaleKw.test(v.name));
+  let malIdx=pool.findIndex(v=>maleKw.test(v.name));
+
+  if(femIdx<0)femIdx=0;
+  if(malIdx<0)malIdx=pool.length>1?1:0;
+  // Aynı ses seçilmişse Mert'i bir sonrakine al
+  if(femIdx===malIdx&&pool.length>1)malIdx=(femIdx+1)%pool.length;
+
+  tolgaSel.value=femIdx;
+  mertSel.value=malIdx;
+}
+
+window.speechSynthesis.onvoiceschanged=populateVoices;
+populateVoices();
+
+function renderLines(){
+  SECTIONS.forEach(sec=>{
+    const el=document.getElementById(sec.id);
+    el.innerHTML='';
+    sec.data.forEach((line,i)=>{
+      const cls=line.s===1?'tolga':'mert';
+      const lbl=line.s===1?'Tolga':'Mert';
+      const div=document.createElement('div');
+      div.className=`line ${cls}`;
+      div.id=`line-${sec.id}-${i}`;
+      div.innerHTML=`<div class="speaker">${lbl}</div>${line.t}`;
+      el.appendChild(div);
+    });
+  });
+}
+renderLines();
+
+function getVoice(s){
+  const trVoices=voices.filter(v=>v.lang.startsWith('tr'));
+  const pool=trVoices.length?trVoices:voices;
+  if(s===1){
+    const idx=parseInt(document.getElementById('tolga-voice').value)||0;
+    return pool[idx]||voices[0];
+  } else {
+    const idx=parseInt(document.getElementById('mert-voice').value)||0;
+    return pool[idx]||voices[0];
+  }
+}
+
+function highlightLine(idx){
+  document.querySelectorAll('.line').forEach(el=>el.classList.remove('active'));
+  const line=ALL[idx];
+  const el=document.getElementById(`line-${line.secId}-${line.localIdx}`);
+  if(el){el.classList.add('active');el.scrollIntoView({behavior:'smooth',block:'nearest'});}
+  document.getElementById('prog-text').textContent=`${idx+1} / ${ALL.length}`;
+  document.getElementById('progress').style.width=((idx+1)/ALL.length*100)+'%';
+}
+
+function speakLine(idx){
+  if(idx>=ALL.length){stopPlay();return;}
+  currentIdx=idx;
+  highlightLine(idx);
+  const line=ALL[idx];
+  const utter=new SpeechSynthesisUtterance(line.t);
+  utter.lang='tr-TR';
+  utter.voice=getVoice(line.s);
+  utter.rate=parseFloat(document.getElementById('speed').value);
+  utter.pitch=line.s===1?0.85:0.95;
+  utter.onend=()=>{
+    if(!stopped&&!paused)setTimeout(()=>speakLine(idx+1),120);
+  };
+  window.speechSynthesis.speak(utter);
+}
+
+function startPlay(){
+  window.speechSynthesis.cancel();
+  stopped=false;paused=false;currentIdx=0;
+  document.getElementById('btn-play').disabled=true;
+  document.getElementById('btn-pause').disabled=false;
+  document.getElementById('btn-stop').disabled=false;
+  speakLine(0);
+}
+
+function togglePause(){
+  if(paused){
+    paused=false;
+    document.getElementById('btn-pause').textContent='⏸ Duraklat';
+    window.speechSynthesis.resume();
+    if(!window.speechSynthesis.speaking)speakLine(currentIdx);
+  } else {
+    paused=true;
+    document.getElementById('btn-pause').textContent='▶ Devam Et';
+    window.speechSynthesis.pause();
+  }
+}
+
+function stopPlay(){
+  stopped=true;paused=false;
+  window.speechSynthesis.cancel();
+  document.getElementById('btn-play').disabled=false;
+  document.getElementById('btn-pause').disabled=true;
+  document.getElementById('btn-pause').textContent='⏸ Duraklat';
+  document.getElementById('btn-stop').disabled=true;
+  document.querySelectorAll('.line').forEach(el=>el.classList.remove('active'));
+  document.getElementById('progress').style.width='0%';
+  document.getElementById('prog-text').textContent='0 / 0';
+}
+</script>
+</body>
+</html>

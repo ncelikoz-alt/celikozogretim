@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strateji Nedir? — Podcast</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Tahoma,sans-serif;background:#F5F0FF;color:#2d2d2d;min-height:100vh;padding:1.5rem}
+.container{max-width:700px;margin:0 auto}
+.header{background:linear-gradient(135deg,#4A1D6E,#2D0B45);border-radius:16px;padding:2rem;color:#fff;margin-bottom:1.5rem;text-align:center}
+.header h1{font-size:1.6rem;font-weight:700;margin-bottom:.4rem}
+.header .meta{font-size:.85rem;opacity:.85}
+.big-play{display:block;width:100%;padding:1rem;background:#4A1D6E;color:#fff;border:none;border-radius:12px;font-size:1.1rem;font-weight:700;cursor:pointer;margin-bottom:.8rem;transition:background .2s}
+.big-play:hover{background:#2D0B45}
+.mini-controls{display:flex;gap:.6rem;margin-bottom:1rem}
+.btn{flex:1;padding:.6rem;border:none;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;transition:opacity .2s}
+.btn:disabled{opacity:.4;cursor:default}
+.btn-pause{background:#2D6A4F;color:#fff}
+.btn-stop{background:#555;color:#fff}
+.prog-wrap{margin-bottom:1.2rem}
+.prog-bar{background:#ddd5f0;border-radius:8px;height:8px;margin-bottom:.3rem;overflow:hidden}
+.prog-fill{height:100%;background:#4A1D6E;width:0%;transition:width .3s;border-radius:8px}
+.prog-label{font-size:.78rem;color:#888;text-align:right}
+.settings{background:#fff;border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.2rem;border:1px solid #ddd5f0}
+.settings-title{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#4A1D6E;margin-bottom:.8rem}
+.voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:.6rem}
+.voice-item label{display:block;font-size:.78rem;color:#666;margin-bottom:.3rem;font-weight:600}
+.voice-item select{width:100%;padding:.4rem .6rem;border-radius:6px;border:1px solid #ddd;font-size:.82rem;background:#fafafa}
+.tolga-col label{color:#4A1D6E}
+.mert-col label{color:#B8860B}
+.voice-hint{font-size:.75rem;color:#999;margin-bottom:.8rem;font-style:italic}
+.speed-row{display:flex;align-items:center;gap:.8rem;font-size:.82rem;color:#555}
+.speed-row input{flex:1}
+.speed-val{font-weight:700;color:#4A1D6E;min-width:36px}
+.segment{background:#fff;border-radius:12px;padding:1rem 1.2rem;margin-bottom:.8rem;border:1px solid #ddd5f0}
+.seg-label{display:inline-block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:3px 10px;border-radius:20px;margin-bottom:.8rem}
+.seg-giris{background:#EDE0FF;color:#2D0B45}
+.seg-tekrar{background:#D8EDE4;color:#1A4D35}
+.seg-anlam{background:#EDE0FF;color:#2D0B45}
+.seg-yurutcu{background:#D8EDE4;color:#1A4D35}
+.seg-ogretmen{background:#EDE0FF;color:#2D0B45}
+.seg-arac{background:#D8EDE4;color:#1A4D35}
+.seg-yontem{background:#EDE0FF;color:#2D0B45}
+.seg-kapanis{background:#FDF3D0;color:#7A5500}
+.line{padding:.5rem .6rem;border-radius:8px;margin-bottom:.4rem;font-size:.9rem;line-height:1.6;transition:background .2s}
+.line.active{background:#EDE0FF;font-weight:600}
+.line .speaker{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.tolga .speaker{color:#4A1D6E}
+.mert .speaker{color:#B8860B}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1>🎧 Strateji Nedir?</h1>
+    <div class="meta">Tolga & Mert • Temel Kavramlar Serisi</div>
+  </div>
+
+  <button class="big-play" id="btn-play" onclick="startPlay()">▶ Dinlemeye Başla</button>
+  <div class="mini-controls">
+    <button class="btn btn-pause" id="btn-pause" onclick="togglePause()" disabled>⏸ Duraklat</button>
+    <button class="btn btn-stop" id="btn-stop" onclick="stopPlay()" disabled>⏹ Durdur</button>
+  </div>
+
+  <div class="prog-wrap">
+    <div class="prog-bar"><div class="prog-fill" id="progress"></div></div>
+    <div class="prog-label" id="prog-text">0 / 0</div>
+  </div>
+
+  <div class="settings">
+    <div class="settings-title">Ses Ayarları</div>
+    <div class="voice-grid">
+      <div class="voice-item tolga-col">
+        <label>Tolga — Erkek sesi 1</label>
+        <select id="tolga-voice"></select>
+      </div>
+      <div class="voice-item mert-col">
+        <label>Mert — Erkek sesi 2</label>
+        <select id="mert-voice"></select>
+      </div>
+    </div>
+    <p class="voice-hint">İki farklı erkek sesi seçin — sesler birbirinden ayrışsın.</p>
+    <div class="speed-row">
+      <span>Konuşma hızı:</span>
+      <input type="range" id="speed" min="0.6" max="1.5" step="0.05" value="0.92"
+        oninput="document.getElementById('speed-val').textContent=parseFloat(this.value).toFixed(2)+'x'">
+      <span class="speed-val" id="speed-val">0.92x</span>
+    </div>
+  </div>
+
+  <div class="segment"><span class="seg-label seg-giris">Giriş</span><div id="giris-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-tekrar">Tekrar Stratejisi Neden Yetmiyor?</span><div id="tekrar-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-anlam">Anlamlandırma ve Örgütleme</span><div id="anlam-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-yurutcu">Yürütücü Biliş</span><div id="yurutcu-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-ogretmen">Öğretmen Stratejiyi Neye Göre Seçer?</span><div id="ogretmen-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-arac">Strateji Araçtır, Amaç Değil</span><div id="arac-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-yontem">Strateji ile Yöntem Farkı</span><div id="yontem-lines"></div></div>
+  <div class="segment"><span class="seg-label seg-kapanis">Kapanış</span><div id="kapanis-lines"></div></div>
+
+</div>
+
+<script>
+// s:1 = Tolga, s:2 = Mert
+const GIRIS=[
+  {s:2,t:"Tolga, sınav öncesi nasıl çalışıyorsun?"},
+  {s:1,t:"Genellikle notlarımı tekrar tekrar okuyorum. Bazen de önemli yerlerin altını çiziyorum."},
+  {s:2,t:"Yani strateji kullanıyorsun — ama farkında mısın?"},
+  {s:1,t:"Farkında olduğumu söyleyemem. Sadece çalışıyorum işte."},
+];
+const TEKRAR=[
+  {s:2,t:"İşte tam da bu kritik nokta. Çoğu öğrenci strateji kullanıyor ama hangi stratejiyi neden kullandığını bilmiyor. Tekrar stratejisi bilgiyi kısa sürede akılda tutmak için işe yarar — ama sınavdan sonra? Bir hafta içinde büyük çoğunluğu gidiyor."},
+  {s:1,t:"Bunu çok yaşadım. Sınav bitti, her şey uçtu."},
+  {s:2,t:"Çünkü tekrar yüzeysel bir strateji. Bilgiyi depoluyor ama işlemiyor."},
+];
+const ANLAM=[
+  {s:1,t:"Peki anlamlandırma ve örgütleme nasıl farklı çalışıyor?"},
+  {s:2,t:"Anlamlandırma; yeni öğrendiğin şeyi zaten bildiğin bir şeyle ilişkilendirmek. Bu tıpkı şuna benziyor demek, ya da bir örnek üretmek. Örgütleme ise kavramlar arasında zihinsel bir yapı kurmak — tablo, şema, harita gibi. İkisi de bilgiyi işliyor, kalıcı öğrenmeyi destekliyor."},
+  {s:1,t:"Yani ezberlemek yerine bağlantı kurmak."},
+  {s:2,t:"Tam olarak. Bağlantı kurulunca bilgi bir yere tutunuyor — uçup gitmiyor."},
+];
+const YURUTCU=[
+  {s:1,t:"Yürütücü biliş de var ya — o ne oluyor?"},
+  {s:2,t:"En üst düzey strateji o. Kendi öğrenmeni izlemek, denetlemek ve gerektiğinde strateji değiştirmek. Anladım mı, anlamadım mı? Bu yöntem işe yarıyor mu, yoksa farklı bir şey mi denesem diye sormak."},
+  {s:1,t:"Yani öğrenmeyi öğrenmek gibi bir şey."},
+  {s:2,t:"Tam olarak. Yürütücü biliş güçlü olan öğrenci bağımsız öğrenebiliyor — öğretmene ya da sınava bağımlı kalmıyor."},
+];
+const OGRETMEN=[
+  {s:1,t:"Peki öğretmen açısından bakarsak — stratejiyi neye göre seçmeli?"},
+  {s:2,t:"Üç şeye bakması gerekiyor. Birincisi öğrencinin hazır bulunuşluğu — öğrenci bu konuya hazır mı, ön bilgisi var mı? İkincisi konunun niteliği — soyut mu somut mu, teorik mi pratik mi? Üçüncüsü hedeflenen öğrenme düzeyi — ezberleme mi, anlama mı, uygulama mı, yoksa üst düzey düşünme mi isteniyor?"},
+  {s:1,t:"Yani strateji bu üçünün kesiştiği noktada belirleniyor."},
+  {s:2,t:"Aynen. Yeni ve karmaşık bir kavramı öğretirken aktarım stratejisi temel çerçeveyi sunar. Kavram yerleştikten sonra sorgulama ile derinleştirilir. Gerçek hayata transfer için deneyim ve yerinde öğretim devreye girer."},
+];
+const ARAC=[
+  {s:1,t:"Demek ki tek bir stratejiyle tüm dersi götürmek doğru değil."},
+  {s:2,t:"Doğru değil. Tek bir strateji her durumda işe yaramaz. Strateji araçtır — amaç değil. Önce öğrenci ne öğrenmeli sorusu yanıtlanır, sonra bu hedefe hangi stratejiyle en iyi ulaşırım sorusu sorulur."},
+];
+const YONTEM=[
+  {s:1,t:"Strateji ile yöntem arasındaki farkı da hiç tam kavrayamadım."},
+  {s:2,t:"Strateji daha üst düzey ve soyut. Yöntem ise o stratejinin sınıfta somutlaştığı biçim. Sorgulama stratejisini benimseyen öğretmen bunu tartışma yöntemiyle, problem çözme yöntemiyle ya da örnek olay tekniğiyle uygulayabilir. Strateji çatı, yöntem o çatının altındaki oda."},
+  {s:1,t:"Yani aynı strateji farklı yöntemlerle hayata geçebilir."},
+  {s:2,t:"Kesinlikle. İyi öğretmen stratejiyi sabit tutuyor, yöntemi bağlama göre değiştiriyor."},
+];
+const KAPANIS=[
+  {s:1,t:"O zaman stratejiyi bilmek hem öğrenci hem öğretmen için çok kritik."},
+  {s:2,t:"Öğrenci için kendi öğrenmesini yönetmek, öğretmen için dersin genel yolunu çizmek. İkisi birbirini tamamladığında öğretim gerçekten işliyor."},
+];
+
+const SECTIONS=[
+  {id:'giris-lines',data:GIRIS},
+  {id:'tekrar-lines',data:TEKRAR},
+  {id:'anlam-lines',data:ANLAM},
+  {id:'yurutcu-lines',data:YURUTCU},
+  {id:'ogretmen-lines',data:OGRETMEN},
+  {id:'arac-lines',data:ARAC},
+  {id:'yontem-lines',data:YONTEM},
+  {id:'kapanis-lines',data:KAPANIS},
+];
+
+const ALL=[];
+SECTIONS.forEach(sec=>{
+  sec.data.forEach((line,i)=>{
+    ALL.push({...line,secId:sec.id,localIdx:i});
+  });
+});
+
+let voices=[];
+let currentIdx=0,paused=false,stopped=false;
+
+function populateVoices(){
+  voices=window.speechSynthesis.getVoices();
+  const trVoices=voices.filter(v=>v.lang.startsWith('tr'));
+  const pool=trVoices.length?trVoices:voices;
+  const tolgaSel=document.getElementById('tolga-voice');
+  const mertSel=document.getElementById('mert-voice');
+  tolgaSel.innerHTML='';
+  mertSel.innerHTML='';
+  pool.forEach((v,i)=>{
+    tolgaSel.innerHTML+=`<option value="${i}">${v.name}</option>`;
+    mertSel.innerHTML+=`<option value="${i}">${v.name}</option>`;
+  });
+  tolgaSel.value=0;
+  mertSel.value=pool.length>1?1:0;
+}
+
+window.speechSynthesis.onvoiceschanged=populateVoices;
+populateVoices();
+
+function renderLines(){
+  SECTIONS.forEach(sec=>{
+    const el=document.getElementById(sec.id);
+    el.innerHTML='';
+    sec.data.forEach((line,i)=>{
+      const cls=line.s===1?'tolga':'mert';
+      const lbl=line.s===1?'Tolga':'Mert';
+      const div=document.createElement('div');
+      div.className=`line ${cls}`;
+      div.id=`line-${sec.id}-${i}`;
+      div.innerHTML=`<div class="speaker">${lbl}</div>${line.t}`;
+      el.appendChild(div);
+    });
+  });
+}
+renderLines();
+
+function getVoice(s){
+  const trVoices=voices.filter(v=>v.lang.startsWith('tr'));
+  const pool=trVoices.length?trVoices:voices;
+  if(s===1){
+    const idx=parseInt(document.getElementById('tolga-voice').value)||0;
+    return pool[idx]||voices[0];
+  } else {
+    const idx=parseInt(document.getElementById('mert-voice').value)||0;
+    return pool[idx]||voices[0];
+  }
+}
+
+function highlightLine(idx){
+  document.querySelectorAll('.line').forEach(el=>el.classList.remove('active'));
+  const line=ALL[idx];
+  const el=document.getElementById(`line-${line.secId}-${line.localIdx}`);
+  if(el){el.classList.add('active');el.scrollIntoView({behavior:'smooth',block:'nearest'});}
+  document.getElementById('prog-text').textContent=`${idx+1} / ${ALL.length}`;
+  document.getElementById('progress').style.width=((idx+1)/ALL.length*100)+'%';
+}
+
+function speakLine(idx){
+  if(idx>=ALL.length){stopPlay();return;}
+  currentIdx=idx;
+  highlightLine(idx);
+  const line=ALL[idx];
+  const utter=new SpeechSynthesisUtterance(line.t);
+  utter.lang='tr-TR';
+  utter.voice=getVoice(line.s);
+  utter.rate=parseFloat(document.getElementById('speed').value);
+  utter.pitch=line.s===1?1.05:0.9;
+  utter.onend=()=>{
+    if(!stopped&&!paused)setTimeout(()=>speakLine(idx+1),120);
+  };
+  window.speechSynthesis.speak(utter);
+}
+
+function startPlay(){
+  window.speechSynthesis.cancel();
+  stopped=false;paused=false;currentIdx=0;
+  document.getElementById('btn-play').disabled=true;
+  document.getElementById('btn-pause').disabled=false;
+  document.getElementById('btn-stop').disabled=false;
+  speakLine(0);
+}
+
+function togglePause(){
+  if(paused){
+    paused=false;
+    document.getElementById('btn-pause').textContent='⏸ Duraklat';
+    window.speechSynthesis.resume();
+    if(!window.speechSynthesis.speaking)speakLine(currentIdx);
+  } else {
+    paused=true;
+    document.getElementById('btn-pause').textContent='▶ Devam Et';
+    window.speechSynthesis.pause();
+  }
+}
+
+function stopPlay(){
+  stopped=true;paused=false;
+  window.speechSynthesis.cancel();
+  document.getElementById('btn-play').disabled=false;
+  document.getElementById('btn-pause').disabled=true;
+  document.getElementById('btn-pause').textContent='⏸ Duraklat';
+  document.getElementById('btn-stop').disabled=true;
+  document.querySelectorAll('.line').forEach(el=>el.classList.remove('active'));
+  document.getElementById('progress').style.width='0%';
+  document.getElementById('prog-text').textContent='0 / 0';
+}
+</script>
+</body>
+</html>
