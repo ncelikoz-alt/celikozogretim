@@ -1,0 +1,2 @@
+# Netlify subdomain -> celikozogretim.com
+https://quiet-semolina-9897f9.netlify.app/* https://celikozogretim.com/:splat 301!
