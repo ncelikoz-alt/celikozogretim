@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Prof. Dr. Nadir Çeliköz – Öğretim İlke Yöntem ve Teknikleri. E-Kitap okuma arayüzü.">
+
+<title>Öğretim İlke Yöntem ve Teknikleri – E-Kitap</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400&family=Source+Serif+4:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- OVERLAY (mobil sidebar kapama) -->
+<div id="overlay"></div>
+
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <div id="sidebar-header">
+    <div class="kitap-logo">ÇELİKÖZ</div>
+    <div class="kitap-adi">Öğretim İlke Yöntem ve Teknikleri</div>
+    <div class="yazar">Prof. Dr. Nadir Çeliköz</div>
+  </div>
+  <nav id="nav">
+    <!-- Giriş -->
+    <div class="nav-item aktif" data-sayfa="giris">
+      <span class="nav-ikon">📖</span> Kitap Girişi
+    </div>
+
+    <!-- BÖLÜM I -->
+    <div class="nav-bolum-toggle" data-bolum="b1">
+      <span class="nav-bolum-ok">▼</span> BÖLÜM I – Temel Kavramlar
+    </div>
+    <div id="nb1" class="nav-bolum-icerik">
+      <div class="nav-item" data-sayfa="b1-giris"><span class="nav-no">I</span> Bölüm Girişi</div>
+      <div class="nav-item" data-sayfa="b1-egitim"><span class="nav-no">1.1</span> Eğitim</div>
+      <div class="nav-item" data-sayfa="b1-ogrenme"><span class="nav-no">1.2</span> Öğrenme</div>
+      <div class="nav-item" data-sayfa="b1-ogretim"><span class="nav-no">1.3</span> Öğretim</div>
+      <div class="nav-item" data-sayfa="b1-ogretmen"><span class="nav-no">1.4</span> Öğretmen</div>
+      <div class="nav-item" data-sayfa="b1-kuram"><span class="nav-no">1.5</span> Kuram</div>
+      <div class="nav-item" data-sayfa="b1-yaklasim"><span class="nav-no">1.6</span> Yaklaşım</div>
+      <div class="nav-item" data-sayfa="b1-model"><span class="nav-no">1.7</span> Model</div>
+      <div class="nav-item" data-sayfa="b1-strateji"><span class="nav-no">1.8</span> Strateji</div>
+      <div class="nav-item" data-sayfa="b1-yontem"><span class="nav-no">1.9</span> Yöntem</div>
+      <div class="nav-item" data-sayfa="b1-teknik"><span class="nav-no">1.10</span> Teknik</div>
+      <div class="nav-item" data-sayfa="b1-ilke"><span class="nav-no">1.11</span> İlke</div>
+      <div class="nav-ayrac"></div>
+      <div class="nav-item" data-sayfa="b1-ozet"><span class="nav-ikon">📊</span> Özet ve İnfografik</div>
+      <div class="nav-item" data-sayfa="b1-sekil12"><span class="nav-ikon">🔗</span> Kavramsal Zincir</div>
+      <div class="nav-item" data-sayfa="b1-harita"><span class="nav-ikon">🗺️</span> Kavram Haritası</div>
+      <div class="nav-item" data-sayfa="b1-bulmaca"><span class="nav-ikon">🧩</span> Bulmaca</div>
+      <div class="nav-item" data-sayfa="b1-test"><span class="nav-ikon">✅</span> Kısa Test</div>
+    </div>
+
+    <!-- BÖLÜM II -->
+    <div class="nav-bolum-toggle" data-bolum="b2">
+      <span class="nav-bolum-ok">▼</span> BÖLÜM II – Teorik Temeller
+    </div>
+    <div id="nb2" class="nav-bolum-icerik">
+      <div class="nav-item" data-sayfa="b2-giris"><span class="nav-no">II</span> Bölüm Girişi</div>
+      <div class="nav-item" data-sayfa="b2-kuram"><span class="nav-no">2.1</span> Kuram</div>
+      <div class="nav-item" data-sayfa="b2-yaklasim"><span class="nav-no">2.2</span> Yaklaşım</div>
+      <div class="nav-item" data-sayfa="b2-model"><span class="nav-no">2.3</span> Model</div>
+      <div class="nav-item" data-sayfa="b2-strateji"><span class="nav-no">2.4</span> Strateji</div>
+      <div class="nav-item" data-sayfa="b2-yontem"><span class="nav-no">2.5</span> Yöntem</div>
+      <div class="nav-item" data-sayfa="b2-teknik"><span class="nav-no">2.6</span> Teknik</div>
+      <div class="nav-item" data-sayfa="b2-ilke"><span class="nav-no">2.7</span> İlke</div>
+      <div class="nav-item" data-sayfa="b2-bireysel"><span class="nav-no">2.8</span> Bireysel Farklılıklar</div>
+      <div class="nav-item" data-sayfa="b2-ysf"><span class="nav-no">2.9</span> Yöntem Seçimi Faktörleri</div>
+      <div class="nav-ayrac"></div>
+      <div class="nav-item" data-sayfa="b2-kharita2"><span class="nav-ikon">🗺️</span> Kavram Haritası</div>
+      <div class="nav-item" data-sayfa="b2-bulmaca2"><span class="nav-ikon">🧩</span> Bulmaca</div>
+      <div class="nav-item" data-sayfa="b2-test2"><span class="nav-ikon">✅</span> Test Soruları</div>
+    </div>
+
+    <!-- BÖLÜM III -->
+    <div class="nav-bolum-toggle" data-bolum="b3">
+      <span class="nav-bolum-ok">▼</span> BÖLÜM III – Yöntem ve Teknikler
+    </div>
+    <div id="nb3" class="nav-bolum-icerik">
+      <div class="nav-item" data-sayfa="b3-giris"><span class="nav-no">III</span> Bölüm Girişi</div>
+      <div class="nav-item" data-sayfa="b3-anlatim"><span class="nav-no">3.1</span> Anlatım Yöntemi</div>
+      <div class="nav-item" data-sayfa="b3-gosteri"><span class="nav-no">3.2</span> Gösterip–Yaptırma</div>
+      <div class="nav-item" data-sayfa="b3-tartisma"><span class="nav-no">3.3</span> Tartışma Yöntemi</div>
+      <div class="nav-item" data-sayfa="b3-isbirligi"><span class="nav-no">3.4</span> İşbirlikli Öğretim</div>
+      <div class="nav-item" data-sayfa="b3-problem"><span class="nav-no">3.5</span> Problem Çözme</div>
+      <div class="nav-item" data-sayfa="b3-proje"><span class="nav-no">3.6</span> Proje Yöntemi</div>
+      <div class="nav-item" data-sayfa="b3-drama"><span class="nav-no">3.7</span> Drama Yöntemi</div>
+      <div class="nav-item" data-sayfa="b3-simulasyon"><span class="nav-no">3.8</span> Simülasyon</div>
+      <div class="nav-item" data-sayfa="b3-oyun"><span class="nav-no">3.9</span> Eğitsel Oyun</div>
+      <div class="nav-item" data-sayfa="b3-gezi"><span class="nav-no">3.10</span> Gezi Yöntemi</div>
+      <div class="nav-item" data-sayfa="b3-alan"><span class="nav-no">3.11</span> Alan Çalışması</div>
+      <div class="nav-item" data-sayfa="b3-isbasi"><span class="nav-no">3.12</span> İş Başında Öğretim</div>
+      <div class="nav-item" data-sayfa="b3-staj"><span class="nav-no">3.13</span> Staj</div>
+      <div class="nav-item" data-sayfa="b3-birebir"><span class="nav-no">3.14</span> Birebir Öğretim</div>
+      <div class="nav-item" data-sayfa="b3-moduler"><span class="nav-no">3.15</span> Modüler Öğretim</div>
+      <div class="nav-item" data-sayfa="b3-ai"><span class="nav-no">3.16</span> Dijital / AI Temelli</div>
+    </div>
+
+    <!-- Kaynakça -->
+    <div class="nav-ayrac"></div>
+    <div class="nav-item" data-sayfa="kaynakca">
+      <span class="nav-ikon">📚</span> Kaynakça
+    </div>
+  </nav>
+</aside>
+
+<!-- MAIN -->
+<div id="main">
+  <!-- TOPBAR -->
+  <div id="topbar">
+    <button id="menu-toggle">☰</button>
+    <div id="bread">Kitap Girişi</div>
+    <div id="progress-wrap">
+      <div id="progress-bar"><div id="progress-fill"></div></div>
+      <div id="progress-text">%0</div>
+    </div>
+  </div>
+
+  <!-- İÇERİK -->
+  <div id="icerik"></div>
+
+  <!-- ALT NAVİGASYON -->
+  <div id="alt-nav">
+    <button class="nav-btn" id="btn-onceki">← Önceki</button>
+    <span id="sayfa-no">1 / 1</span>
+    <button class="nav-btn" id="btn-sonraki">Sonraki →</button>
+  </div>
+</div>
+
+<script src="sayfalar.js"></script>
+<script src="media.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
